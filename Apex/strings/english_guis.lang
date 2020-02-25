@@ -15,6 +15,10 @@
 	"#str_500014" "OCTANE - Not a Druggie? (I think), Uses his stim to go faster, And uses his jump pad to go higher"
 	
 	
+	//Binds
+	"#str_555" "TACTICAL"
+	"#str_559" "ULTIMATE" 
+	
 	"#str_200000"	"NEW GAME"
 	"#str_200001"	"LOAD GAME"
 	"#str_200002"	"MULTIPLAYER"
@@ -115,7 +119,7 @@
 	"#str_200100"	"Turn Left"
 	"#str_200101"	"Turn Right"
 	"#str_200102"	"Strafe"
-	"#str_200103"	"Walk"
+	"#str_200103"	"Sprint" //"Walk"
 	"#str_200104"	"Blaster/Gauntlet"
 	"#str_200105"	"Shotgun"
 	"#str_200106"	"Machinegun"
