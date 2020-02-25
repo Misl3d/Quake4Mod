@@ -1128,23 +1128,27 @@ void idAI::Event_PostSpawn( void ) {
 		case 3:
 			//THIS IS OCTANE
 			//health *= 1.4f;
+			health *= 1.0f;
 			//common->Printf("Case 3 is here");
 			legend == OCTANE;
 			break;
 		case 2:
 			//THIS IS CAUSTIC
 			//health *= 1.2f;
+			health *= 1.0f;
 			//common->Printf("Case 2 is here");
 			legend == CAUSTIC;
 			break;
 		case 0:
 			//THIS IS LIFELINE
 			//health *= 1.2f;
+			health *= 1.0f;
 			//common->Printf("Case 0 is here");
 			legend = LIFELINE;
 			break;
 		case 1:
 			//THIS IS MIRAGE
+			health *= 1.0f;
 			//common->Printf("Case 1 is here");
 			legend = MIRAGE;
 		default:

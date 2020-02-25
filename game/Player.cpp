@@ -158,8 +158,6 @@ CLASS_DECLARATION( idActor, idPlayer )
 	EVENT( EV_ApplyImpulse,					idPlayer::Event_ApplyImpulse )
 
 // RAVEN BEGIN
-//SET LEGEND
-	EVENT(AI_SetLegend,						idPlayer::Event_SetLegend)
 // mekberg: sethealth on player.
 	EVENT( AI_SetHealth,					idPlayer::Event_SetHealth )
 //MCG: setArmor
@@ -3404,7 +3402,7 @@ void idPlayer::UpdateHudStats( idUserInterface *_hud ) {
 		
 	temp = _hud->State().GetInt ( "player_armor", "-1" );
 	if ( temp != inventory.armor ) {
-		_hud->SetStateInt ( "player_armorDelta", temp == -1 ? 0 : (temp - inventory.armor) );
+		_hud->SetStateInt ( "player_armorDelta", temp == -100 ? -100 : (temp - inventory.armor) );
 		_hud->SetStateInt ( "player_armor", inventory.armor );
 		_hud->SetStateFloat	( "player_armorpct", idMath::ClampFloat ( 0.0f, 1.0f, (float)inventory.armor / (float)inventory.maxarmor ) );
 		_hud->HandleNamedEvent ( "updateArmor" );
