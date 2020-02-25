@@ -857,7 +857,7 @@ public:
 	bool					IsTeamGameType( void ) { return ( gameType == GAME_TDM || gameType == GAME_CTF || gameType == GAME_ARENA_CTF || gameType == GAME_DEADZONE ); }
 	bool					IsTeamPowerups( void );
 
-	// twhitaker: needed this for difficulty settings
+	// twhitaker: needed this for difficulty settings		--- "Private", "Corporal", "Lieutenant" and "General"
 	float					GetDifficultyModifier( void ) { const static float difficulty[] = { -0.3f, 0.0f, 0.4f, 0.8f }; return difficulty[ idMath::ClampInt( 0, 3, g_skill.GetInteger() ) ]; }
 
 	bool					IsMultiplayer( void ) { return isMultiplayer; }

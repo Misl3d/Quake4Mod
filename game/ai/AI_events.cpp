@@ -1123,24 +1123,36 @@ void idAI::Event_PostSpawn( void ) {
 	// twhitaker: difficulty levels
 	if ( team == TEAM_MARINE ) {
 		//health /= 1.0f + gameLocal.GetDifficultyModifier( );
-
 		//buddies are a little more healthy on hard & nightmare since the baddies deal so much more damage
 		switch ( g_skill.GetInteger() ) {
 		case 3:
-			health *= 1.4f;
+			//THIS IS OCTANE
+			//health *= 1.4f;
+			//common->Printf("Case 3 is here");
+			legend == OCTANE;
 			break;
 		case 2:
-			health *= 1.2f;
+			//THIS IS CAUSTIC
+			//health *= 1.2f;
+			//common->Printf("Case 2 is here");
+			legend == CAUSTIC;
 			break;
 		case 0:
-			health *= 1.2f;
+			//THIS IS LIFELINE
+			//health *= 1.2f;
+			//common->Printf("Case 0 is here");
+			legend = LIFELINE;
 			break;
 		case 1:
+			//THIS IS MIRAGE
+			//common->Printf("Case 1 is here");
+			legend = MIRAGE;
 		default:
 			break;
 		}
 	} else {
-		health *= 1.0f + gameLocal.GetDifficultyModifier( );
+		//health *= 1.0f + gameLocal.GetDifficultyModifier( );
+		//common->Printf("Case Else is here");
 	}
 	// RAVEN END
 }

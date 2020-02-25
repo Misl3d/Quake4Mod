@@ -158,6 +158,8 @@ CLASS_DECLARATION( idActor, idPlayer )
 	EVENT( EV_ApplyImpulse,					idPlayer::Event_ApplyImpulse )
 
 // RAVEN BEGIN
+//SET LEGEND
+	EVENT(AI_SetLegend,						idPlayer::Event_SetLegend)
 // mekberg: sethealth on player.
 	EVENT( AI_SetHealth,					idPlayer::Event_SetHealth )
 //MCG: setArmor
