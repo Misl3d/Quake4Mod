@@ -1726,6 +1726,7 @@ void idPlayer::Init( void ) {
 		// in MP we set isStrogg in UpdateModelSetup()
 		isStrogg = spawnArgs.GetBool ( "strogg", "0" );
 	}
+	}
 
  
  	aimClientNum		= -1;
@@ -9974,13 +9975,17 @@ void idPlayer::CalcDamagePoints( idEntity *inflictor, idEntity *attacker, const 
 		if ( inflictor != gameLocal.world ) {
 			switch ( g_skill.GetInteger() ) {
 				case 0: 
-					damage = ceil(0.80f*(float)damage);
+					//damage = ceil(0.80f*(float)damage);
+					break;
+					
+				case 1:
+					//damage = ceil(0.80f*(float)damage);
 					break;
 				case 2:
-					damage *= 1.7f;
+					//damage *= 1.7f;
 					break;
 				case 3:
- 					damage *= 3.5f;
+ 					//damage *= 3.5f;
 					break;
 				default:
 					//damage *= 1.1f;  reverted to 1.0 for default damage... as per Biessman's request.

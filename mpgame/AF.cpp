@@ -1149,7 +1149,7 @@ void idAF::LoadState( const idDict &args ) {
 		name.Strip( "body " );
 		body = physicsObj.GetBody( name );
 		if ( body ) {
-			sscanf( kv->GetValue(), "%f %f %f %f %f %f", &origin.x, &origin.y, &origin.z, &angles.pitch, &angles.yaw, &angles.roll );
+			sscanf_s( kv->GetValue(), "%f %f %f %f %f %f", &origin.x, &origin.y, &origin.z, &angles.pitch, &angles.yaw, &angles.roll );
 			body->SetWorldOrigin( origin );
 			body->SetWorldAxis( angles.ToMat3() );
 		} else {
@@ -1279,7 +1279,7 @@ void idAF::AddBindConstraints( void ) {
 			{
 				float	frictionValue = 0;
 
-				sscanf(jointFriction.c_str(), "%f", &frictionValue);
+				sscanf_s(jointFriction.c_str(), "%f", &frictionValue);
 				c->SetFriction(frictionValue);
 			}
 			idToken		hingeAxis;
@@ -1287,7 +1287,7 @@ void idAF::AddBindConstraints( void ) {
 			{
 				int		hingeAxisValue = 1;
 
-				sscanf(hingeAxis.c_str(), "%d", &hingeAxisValue);
+				sscanf_s(hingeAxis.c_str(), "%d", &hingeAxisValue);
 				if (hingeAxisValue >= 0 && hingeAxisValue <= 2)
 				{
 					c->SetAxis(renderAxis[hingeAxisValue]);

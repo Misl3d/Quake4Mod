@@ -9,6 +9,7 @@
 #include "Game_local.h"
 
 #include "ai/AI.h"
+
 #include "ai/AI_Manager.h"
 #include "Weapon.h"
 #include "Projectile.h"
@@ -9958,6 +9959,9 @@ doesn't actually do anything with them.  This is used to tell when an attack
 would have killed the player, possibly allowing a "saving throw"
 =================
 */
+
+
+
 void idPlayer::CalcDamagePoints( idEntity *inflictor, idEntity *attacker, const idDict *damageDef,
 							   const float damageScale, const int location, int *health, int *armor ) {
 	int		damage;
@@ -9977,13 +9981,23 @@ void idPlayer::CalcDamagePoints( idEntity *inflictor, idEntity *attacker, const 
 		if ( inflictor != gameLocal.world ) {
 			switch ( g_skill.GetInteger() ) {
 				case 0: 
-					damage = ceil(0.80f*(float)damage);
+					//damage = ceil(0.80f*(float)damage);
+					//isLifeline == true;
+					common->Printf("LIFELINE IS HERE!");
+					break;
+				case 1:
+				//	isMirage == true;
+					common->Printf("MIRAGE IS HERE!");
 					break;
 				case 2:
-					damage *= 1.7f;
+					//damage *= 1.7f;
+					//isCaustic == true;
+					common->Printf("CAUSTIC IS HERE!");
 					break;
 				case 3:
- 					damage *= 3.5f;
+ 					//damage *= 3.5f;
+					//isOctane == true;
+					common->Printf("OCTANE IS HERE!");
 					break;
 				default:
 					//damage *= 1.1f;  reverted to 1.0 for default damage... as per Biessman's request.
@@ -13536,8 +13550,28 @@ const char* idPlayer::GetSpawnClassname ( void ) {
 	const char*	entityFilter;
 	
 	// Test player def
-	if ( *g_testPlayer.GetString() ) {
+	/*if ( *g_testPlayer.GetString() ) {
 		return g_testPlayer.GetString ( );
+	}*/
+
+	if ( g_skill.GetInteger() == 0){
+		common->Printf("LIFELINE IS HERE!");
+		return "player_lifeline";
+	}
+
+	if ( g_skill.GetInteger() == 1){
+		common->Printf("MIRAGE IS HERE!");
+		return "player_mirage";
+	}
+
+	if ( g_skill.GetInteger() == 2){
+		common->Printf("CAUSTIC IS HERE!");
+		return "player_caustic";
+	}
+
+	if ( g_skill.GetInteger() == 3){
+		common->Printf("OCTANE IS HERE!");
+		return "player_octane";
 	}
 
 	// Multiplayer

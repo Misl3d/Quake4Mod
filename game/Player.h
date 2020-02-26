@@ -884,6 +884,7 @@ private:
 
 	playerTourneyStatus_t	tourneyStatus;
 	bool					isStrogg;
+	bool					isOctane;
 
 	idInterpolate<float>	zoomFov;
 	idInterpolate<float>	centerView;
