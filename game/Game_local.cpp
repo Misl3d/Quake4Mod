@@ -333,7 +333,7 @@ void idGameLocal::Clear( void ) {
 	playerConnectedAreas.i = -1;
 	playerConnectedAreas.h = -1;
 	gamestate = GAMESTATE_UNINITIALIZED;
-	skipCinematic = false;
+	skipCinematic = true;
 	influenceActive = false;
 
 	localClientNum = 0;
@@ -1441,7 +1441,7 @@ void idGameLocal::LoadMap( const char *mapName, int randseed ) {
 	aiManager.Clear();
 // RAVEN END
 
-	skipCinematic = false;
+	skipCinematic = true;
 	inCinematic = false;
 	cinematicSkipTime = 0;
 	cinematicStopTime = 0;

@@ -79,7 +79,18 @@ const int IMPULSE_51			= 51;			// switch to last weapon
 // ddynerman: mp stats
 const int IMPULSE_52			= 52;			// mp statistics
 // RAVEN END
+////////////////////////////////////////////////////APEX////////////////////////////////////////////////////
 
+const int IMPULSE_61			= 61;	//Tactical
+const int IMPULSE_62			= 62;	//ULT
+const int IMPULSE_55			= 55;	//Sryinge
+const int IMPULSE_56			= 56;	//Medkit
+const int IMPULSE_57			= 57;	//Cell
+const int IMPULSE_58			= 58;	//Bat
+const int IMPULSE_59			= 59;	//Acl
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // RAVEN BEGIN
 // asalmon: impulses for weapons combos for xbox
