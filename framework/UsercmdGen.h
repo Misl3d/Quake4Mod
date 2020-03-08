@@ -83,6 +83,9 @@ const int IMPULSE_52			= 52;			// mp statistics
 
 const int IMPULSE_61			= 61;	//Tactical
 const int IMPULSE_62			= 62;	//ULT
+
+const int IMPULSE_54			= 54;	//Items List
+
 const int IMPULSE_55			= 55;	//Sryinge
 const int IMPULSE_56			= 56;	//Medkit
 const int IMPULSE_57			= 57;	//Cell

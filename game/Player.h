@@ -208,11 +208,11 @@ public:
 	int						powerupEndTime[ POWERUP_MAX ];
 	int						weaponMods[ MAX_WEAPONS ];
 
-	int						cells;
-	int						batteries;
+	int						cell;
+	int						battery;
 	int						syringe;
 	int						medkit;
-	int						acclerant;
+	int						accelerant;
 
  	// multiplayer
  	int						ammoPredictTime;

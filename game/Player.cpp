@@ -341,11 +341,12 @@ void idInventory::RestoreInventory( idPlayer *owner, const idDict &dict ) {
 	armor			= dict.GetInt( "armor", "50" );
 	maxarmor		= dict.GetInt( "maxarmor", "100" );
 
-	cells = dict.GetInt("cells", "4");;
-	batteries = dict.GetInt("batteries", "2");;
-	syringe = dict.GetInt("syringe", "4");;
-	medkit = dict.GetInt("medkit", "2");;
-	acclerant = dict.GetInt("acclerant", "2");;
+	cell = dict.GetInt("cell", "4");
+	battery = dict.GetInt("battery", "2");
+	syringe = dict.GetInt("syringe", "4");
+	medkit = dict.GetInt("medkit", "2");
+	accelerant = dict.GetInt("accelerant", "2");
+
 
 	// ammo
 	for( i = 0; i < MAX_AMMOTYPES; i++ ) {
@@ -3415,7 +3416,37 @@ void idPlayer::UpdateHudStats( idUserInterface *_hud ) {
 		_hud->SetStateFloat	( "player_armorpct", idMath::ClampFloat ( 0.0f, 1.0f, (float)inventory.armor / (float)inventory.maxarmor ) );
 		_hud->HandleNamedEvent ( "updateArmor" );
 	}
-	
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	temp = _hud->State().GetInt("player_syringe", "4");
+	if (temp != inventory.syringe) {
+		_hud->SetStateInt("player_syringe", inventory.syringe);
+		_hud->HandleNamedEvent("updateSyringe");
+	}
+
+	temp = _hud->State().GetInt("player_medkit", "2");
+	if (temp != inventory.medkit) {
+		_hud->SetStateInt("player_medkit", inventory.medkit);
+		_hud->HandleNamedEvent("updateMedkit");
+	}
+
+	temp = _hud->State().GetInt("player_cell", "4");
+	if (temp != inventory.cell) {
+		_hud->SetStateInt("player_cell", inventory.cell);
+		_hud->HandleNamedEvent("updateCell");
+	}
+
+	temp = _hud->State().GetInt("player_battery", "4");
+	if (temp != inventory.battery) {
+		_hud->SetStateInt("player_battery", inventory.battery);
+		_hud->HandleNamedEvent("updateBattery");
+	}
+
+	temp = _hud->State().GetInt("player_accelerant", "4");
+	if (temp != inventory.accelerant) {
+		_hud->SetStateInt("player_accelerant", inventory.accelerant);
+		_hud->HandleNamedEvent("updateAccelerant");
+	}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	// Boss bar
 	if ( _hud->State().GetInt ( "boss_health", "-1" ) != (bossEnemy ? bossEnemy->health : -1) ) {
 		if ( !bossEnemy || bossEnemy->health <= 0 ) {
@@ -7219,6 +7250,12 @@ void idPlayer::UpdateFocus( void ) {
 				ui->SetStateString( "player_health", va("%i", health ) );
 				ui->SetStateString( "player_armor", va( "%i%%", inventory.armor ) );
 
+				ui->SetStateString("player_syringe", va("%i%%", inventory.syringe));
+				ui->SetStateString("player_medkit", va("%i%%", inventory.medkit));
+				ui->SetStateString("player_cell", va("%i%%", inventory.cell));
+				ui->SetStateString("player_battery", va("%i%%", inventory.battery));
+				ui->SetStateString("player_accelerant", va("%i%%", inventory.accelerant));
+
 				kv = ent->spawnArgs.MatchPrefix( "gui_", NULL );
 				while ( kv ) {
 					ui->SetStateString( kv->GetKey(), common->GetLocalizedString( kv->GetValue() ) );
@@ -8618,7 +8655,13 @@ void idPlayer::PerformImpulse(int impulse) {
 						 LastWeapon();
 						 break;
 	}
+		/// APEX INFO
+	case IMPULSE_54: {
+						 common->Printf("pressed Apex Items!");
 
+						 hud->HandleNamedEvent("ShowItems");
+						 break;
+	}
 		/// Tactical
 	case IMPULSE_61: {
 						 common->Printf("pressed tactical!");
@@ -8633,36 +8676,48 @@ void idPlayer::PerformImpulse(int impulse) {
 			}
 			/// Sryinge
 			case IMPULSE_55: {
-								 
 
-								 if (health < 85){
-									 health += 15;
-									 //common->Printf("used sryinge!");
+								 if (inventory.syringe == 0){
+									 common->Printf("no syringe");
+									 hud->HandleNamedEvent("noSmallHp");
+									 break;
 								 }
-								 else if (health > 85 || health < 99)
+								 else
 								 {
-									 health = 100;
-									 //common->Printf("--used sryinge!");
-								 }
-								 else if (health = 100)
-								 {
-									 //common->Printf("can't use syringe");
-									 if (hud) {
+									 if (health == 100){
 										 hud->HandleNamedEvent("healthFull");
 									 }
+									 else if (health >= 85 || health <= 99){
+										 health = 100;
+										 inventory.syringe -= 1;
+										 common->Printf("set 100");
+									 }
+									 else {
+										 health += 15;
+										 inventory.syringe -= 1;
+										 common->Printf("added 15");
+									 }
 								 }
-							   break;
+								 break;
 			}
 			
 		/// Medkit
 			case IMPULSE_56: {
-								 if (health < 100)
+								 if (inventory.medkit == 0)
 								 {
-									 //common->Printf("used medkit!");
-									 health = 100;
-								 } else if (health = 100) {
-									 if (hud) {
-										 hud->HandleNamedEvent("healthFull");
+									 hud->HandleNamedEvent("noBigHp");
+									 common->Printf("no Medkit");
+									 break;
+								 } 
+								 else 
+								 {
+									 if (health == 100) {
+									 hud->HandleNamedEvent("healthFull");
+									 }
+									 else
+									 {
+										 inventory.medkit -= 1;
+										 health = 100;
 									 }
 								 }
 
@@ -8671,41 +8726,46 @@ void idPlayer::PerformImpulse(int impulse) {
 
 			/// Cell
 			case IMPULSE_57: {
-								 if (inventory.armor < 0){
-									 inventory.armor = 25;
-									 //common->Printf("used cell!");
+								 if (inventory.cell == 0){
+									 common->Printf("no shield");
+									 hud->HandleNamedEvent("noSmallSd");
 								 }
-								 else if (inventory.armor < 75){
-									 inventory.armor += 25;
-									// common->Printf("used cell!");
-								 }
-								 else if (inventory.armor > 75 || inventory.armor < 99)
+								 else
 								 {
-									 inventory.armor = 100;
-									 //common->Printf("--used cell!");
-								 }
-								 else if (inventory.armor = 100)
-								 {
-									 if (hud) {
+									 if (inventory.armor == 100){
 										 hud->HandleNamedEvent("shieldFull");
 									 }
-									 //common->Printf("Shield Full!");
+									 else if (inventory.armor >= 75 || inventory.armor <= 99){
+										 inventory.armor = 100;
+										 inventory.cell -= 1;
+										 common->Printf("set 100");
+									 }
+									 else {
+										 inventory.armor += 25;
+										 inventory.cell -= 1;
+										 common->Printf("added 25 shield");
+									 }
 								 }
 								 break;
 			}
 
 			/// Battery
 			case IMPULSE_58: {
-								 if (inventory.armor < 100)
+								 if (inventory.battery == 0)
 								 {
-									 //common->Printf("used medkit!");
+									 hud->HandleNamedEvent("noBigSd");
+									 common->Printf("no Shield");
+								 }
+								 else
+								 {
+
+									 if (inventory.armor == 100) {
+										 hud->HandleNamedEvent("shieldFull");
+									 }
+									 else
+									 inventory.battery -= 1;
 									 inventory.armor = 100;
 								 }
-								 else if (inventory.armor = 100) {
-									 hud->HandleNamedEvent("shieldFull");
-									 //common->Printf("Shield full!");
-								 }
-
 								 break;
 			}
 
