@@ -74,6 +74,11 @@ const int	POWERUP_BLINK_TIME	= 1000;			// Time between powerup wear off sounds
 const float MIN_BOB_SPEED		= 5.0f;			// minimum speed to bob and play run/walk animations at
 const int	MAX_RESPAWN_TIME	= 10000;
 const int	RAGDOLL_DEATH_TIME	= 3000;
+
+
+////////////////////////////////////////////
+const int ULT_PULSE = 1000;
+///////////////////////////////////////////
 #ifdef _XENON
 	const int	RAGDOLL_DEATH_TIME_XEN_SP	= 1000;
 	const int	MAX_RESPAWN_TIME_XEN_SP	= 3000;
@@ -346,6 +351,26 @@ void idInventory::RestoreInventory( idPlayer *owner, const idDict &dict ) {
 	syringe = dict.GetInt("syringe", "4");
 	medkit = dict.GetInt("medkit", "2");
 	accelerant = dict.GetInt("accelerant", "2");
+
+	maxUlt = dict.GetInt("maxUlt", "100");
+	maxTact = dict.GetInt("maxTact", "100");
+
+	ultCharge = dict.GetInt("UltCharge", "0");
+	tactCharge = dict.GetInt("tactCharge", "0");
+
+
+	if (ultCharge < maxUlt){
+		int ultTic = 30;
+		ultCharge += ultTic;
+	}
+
+	if (tactCharge < maxTact){
+		int tactTic = 120;
+		tactCharge += tactTic;
+	}
+
+
+
 
 
 	// ammo
@@ -1129,6 +1154,9 @@ idPlayer::idPlayer() {
 	lastDmgTime				= 0;
 	deathClearContentsTime	= 0;
 	nextHealthPulse			= 0;
+
+	nextUltPulse = 0;
+	nextTactPulse = 0;
 
 	scoreBoardOpen			= false;
 	forceScoreBoard			= false;
@@ -2825,7 +2853,10 @@ void idPlayer::SpawnToPoint( const idVec3 &spawn_origin, const idAngles &spawn_a
 	if ( inventory.armor > inventory.maxarmor ) {
 		nextArmorPulse = gameLocal.time + ARMOR_PULSE;
 	}		
+	/////////////////////////////////
 
+
+	////////////////////////////////
 	fl.noknockback = false;
 	// stop any ragdolls being used
 	StopRagdoll();
@@ -3446,6 +3477,16 @@ void idPlayer::UpdateHudStats( idUserInterface *_hud ) {
 		_hud->SetStateInt("player_accelerant", inventory.accelerant);
 		_hud->HandleNamedEvent("updateAccelerant");
 	}
+
+
+	temp = _hud->State().GetInt("player_ultimate", "0");
+	if (temp != inventory.ultCharge) {
+		_hud->SetStateInt("player_ultimate", inventory.ultCharge);
+		_hud->HandleNamedEvent("updateUlt");
+	}
+
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	// Boss bar
 	if ( _hud->State().GetInt ( "boss_health", "-1" ) != (bossEnemy ? bossEnemy->health : -1) ) {
@@ -7256,6 +7297,10 @@ void idPlayer::UpdateFocus( void ) {
 				ui->SetStateString("player_battery", va("%i%%", inventory.battery));
 				ui->SetStateString("player_accelerant", va("%i%%", inventory.accelerant));
 
+				ui->SetStateString("player_ult", va("%i%%", inventory.ultCharge));
+				ui->SetStateString("player_tactical", va("%i%%", inventory.tactCharge));
+
+
 				kv = ent->spawnArgs.MatchPrefix( "gui_", NULL );
 				while ( kv ) {
 					ui->SetStateString( kv->GetKey(), common->GetLocalizedString( kv->GetValue() ) );
@@ -8655,21 +8700,14 @@ void idPlayer::PerformImpulse(int impulse) {
 						 LastWeapon();
 						 break;
 	}
-		/// APEX INFO
-	case IMPULSE_54: {
-						 common->Printf("pressed Apex Items!");
-
-						 hud->HandleNamedEvent("ShowItems");
-						 break;
-	}
-		/// Tactical
+		/// Tactical --------------------------------------------------------------------------------------
 	case IMPULSE_61: {
 						 common->Printf("pressed tactical!");
 						 
 						 break;
 	}
 
-			/// Ultimate
+		/// Ultimate --------------------------------------------------------------------------------------
 			case IMPULSE_62: {
 								common->Printf("used ult!");
 								break;
@@ -8772,7 +8810,26 @@ void idPlayer::PerformImpulse(int impulse) {
 			/// Accelerant
 			case IMPULSE_59: {
 			common->Printf("used accelerant!");
-
+			if (inventory.accelerant == 0){
+				hud->HandleNamedEvent("noACl");
+				common->Printf("no Acl");
+			}
+			else
+			{
+				if (inventory.ultCharge == 100){
+					hud->HandleNamedEvent("ultFull");
+					common->Printf("UltFull");
+				}
+				else if (inventory.ultCharge >= 50){
+					inventory.ultCharge = 100;
+					inventory.accelerant -= 1;
+					common->Printf("ULT Set to 100");
+				}
+				else{
+					inventory.ultCharge += 50;
+					common->Printf("+50 to Ult");
+				}
+			}
 			break;
 			}
 

@@ -12,8 +12,11 @@ const int NAILGUN_DRUMSPEED_SLOW		= 1;
 const int NAILGUN_DRUMSPEED_FAST		= 2;
 
 // Spinup and spindown times
-const int NAILGUN_SPINDOWN_TIME			= 1000;
-const int NAILGUN_SPINUP_TIME			= 1000;
+//const int NAILGUN_SPINDOWN_TIME			= 1000;
+//const int NAILGUN_SPINUP_TIME			= 1000;
+
+const int NAILGUN_SPINDOWN_TIME = 0;
+const int NAILGUN_SPINUP_TIME = 0;
 
 // Nailgun shader parms
 const int NAILGUN_SPARM_PLAYLEADIN		= 7;

@@ -214,6 +214,12 @@ public:
 	int						medkit;
 	int						accelerant;
 
+	int						maxTact;
+	int						maxUlt;
+
+	int						ultCharge;
+	int						tactCharge;
+
  	// multiplayer
  	int						ammoPredictTime;
 	int						ammoRegenStep[ MAX_WEAPONS ];
@@ -361,6 +367,9 @@ public:
 	int						nextAmmoRegenPulse[ MAX_AMMO ];	// time when ammo will regenerate
 	int						nextArmorPulse;		// time when armor will tick down
 	bool					hiddenWeapon;		// if the weapon is hidden ( in noWeapons maps )
+
+	int						nextUltPulse;
+	int						nextTactPulse;
 
 	// mp stuff
 	int						spectator;
