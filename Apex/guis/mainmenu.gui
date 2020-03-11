@@ -6370,12 +6370,12 @@ windowDef Desktop
 				{
 					rect	0,0,640,480
 					visible	0
-					bindDef set_ctrls_other_quicksave_key
+					bindDef set_ctrls_other_tactical_key
 					{
 						rect	452,119,149,18
 						visible	1
 						forecolor	1,0.745,0.137,0.8
-						bind	"savegame quick"
+						bind	_impulse61
 						textscale	0.24
 						font	"fonts/lowpixel"
 
@@ -6384,12 +6384,12 @@ windowDef Desktop
 						}
 
 					}
-					bindDef set_ctrls_other_quickload_key
+					bindDef set_ctrls_other_ultimate_key
 					{
 						rect	452,143,149,18
 						visible	1
 						forecolor	1,0.745,0.137,0.8
-						bind	"loadgame quick"
+						bind	_impulse62
 						textscale	0.24
 						font	"fonts/lowpixel"
 
@@ -6398,12 +6398,12 @@ windowDef Desktop
 						}
 
 					}
-					bindDef set_ctrls_other_chat_key
+					bindDef set_ctrls_other_syringe_key
 					{
 						rect	452,167,149,18
 						visible	1
 						forecolor	1,0.745,0.137,0.8
-						bind	clientMessageMode
+						bind	_impulse55
 						textscale	0.24
 						font	"fonts/lowpixel"
 
@@ -6412,12 +6412,12 @@ windowDef Desktop
 						}
 
 					}
-					bindDef set_ctrls_other_teamchat_key
+					bindDef set_ctrls_other_medkit_key
 					{
 						rect	452,191,149,18
 						visible	1
 						forecolor	1,0.745,0.137,0.8
-						bind	"clientMessageMode 1"
+						bind	_impulse56
 						textscale	0.24
 						font	"fonts/lowpixel"
 
@@ -6426,12 +6426,12 @@ windowDef Desktop
 						}
 
 					}
-					bindDef set_ctrls_other_voteyes_key
+					bindDef set_ctrls_other_cell_key
 					{
 						rect	452,215,149,18
 						visible	1
 						forecolor	1,0.745,0.137,0.8
-						bind	_impulse28
+						bind	_impulse57
 						textscale	0.24
 						font	"fonts/lowpixel"
 
@@ -6440,12 +6440,12 @@ windowDef Desktop
 						}
 
 					}
-					bindDef set_ctrls_other_voteno_key
+					bindDef set_ctrls_other_battery_key
 					{
 						rect	452,239,149,18
 						visible	1
 						forecolor	1,0.745,0.137,0.8
-						bind	_impulse29
+						bind	_impulse58
 						textscale	0.24
 						font	"fonts/lowpixel"
 
@@ -6454,12 +6454,12 @@ windowDef Desktop
 						}
 
 					}
-					bindDef set_ctrls_other_stats_key
+					bindDef set_ctrls_other_acclerant_key
 					{
 						rect	452,263,149,18
 						visible	1
 						forecolor	1,0.745,0.137,0.8
-						bind	_ingamestats
+						bind	_impulse59
 						textscale	0.24
 						font	"fonts/lowpixel"
 
@@ -6468,204 +6468,66 @@ windowDef Desktop
 						}
 
 					}
-					bindDef set_ctrls_other_ready_key
-					{
-						rect	452,287,149,17
-						visible	1
-						forecolor	1,0.745,0.137,0.8
-						bind	_impulse17
-						textscale	0.24
-						font	"fonts/lowpixel"
-
-						onAction {
-							set "cmd" "play main_menu_selection" ;
-						}
-
-					}
-					bindDef set_ctrls_other_salute_key
-					{
-						rect	452,311,149,17
-						visible	1
-						forecolor	1,0.745,0.137,0.8
-						bind	"emote salute"
-						textscale	0.24
-						font	"fonts/lowpixel"
-
-						onAction {
-							set "cmd" "play main_menu_selection" ;
-						}
-
-					}
-					bindDef set_ctrls_other_cheer_key
-					{
-						rect	452,335,149,17
-						visible	1
-						forecolor	1,0.745,0.137,0.8
-						bind	"emote cheer"
-						textscale	0.24
-						font	"fonts/lowpixel"
-
-						onAction {
-							set "cmd" "play main_menu_selection" ;
-						}
-
-					}
-					bindDef set_ctrls_other_taunt_key
-					{
-						rect	452,359,149,17
-						visible	1
-						forecolor	1,0.745,0.137,0.8
-						bind	"emote taunt"
-						textscale	0.24
-						font	"fonts/lowpixel"
-
-						onAction {
-							set "cmd" "play main_menu_selection" ;
-						}
-
-					}
-					bindDef set_ctrls_other_grab_key
-					{
-						rect	452,383,149,17
-						visible	1
-						forecolor	1,0.745,0.137,0.8
-						bind	"emote grab_a"
-						textscale	0.24
-						font	"fonts/lowpixel"
-
-						onAction {
-							set "cmd" "play main_menu_selection" ;
-						}
-
-					}
-					bindDef set_ctrls_other_vchat_key
-					{
-						rect	452,407,149,17
-						visible	1
-						forecolor	1,0.745,0.137,0.8
-						bind	_voicechat
-						textscale	0.24
-						font	"fonts/lowpixel"
-
-						onAction {
-							set "cmd" "play main_menu_selection" ;
-						}
-
-					}
-					windowDef set_ctrls_other_quicksave
+					windowDef set_ctrls_other_tactical
 					{
 						rect	260,119,189,18
 						visible	1
 						forecolor	1,1,1,0.8
-						text	"#str_200123"
+						text	"Tactical"
 						textscale	0.24
 						font	"fonts/lowpixel"
 					}
-					windowDef set_ctrls_other_quickload
+					windowDef set_ctrls_other_ulimate
 					{
 						rect	260,143,189,18
 						visible	1
 						forecolor	1,1,1,0.8
-						text	"#str_200124"
+						text	"Ultimate"
 						textscale	0.24
 						font	"fonts/lowpixel"
 					}
-					windowDef set_ctrls_other_chat
+					windowDef set_ctrls_other_syringe
 					{
 						rect	260,167,189,18
 						visible	1
 						forecolor	1,1,1,0.8
-						text	"#str_200126"
+						text	"Syringe"
 						textscale	0.24
 						font	"fonts/lowpixel"
 					}
-					windowDef set_ctrls_other_teamchat
+					windowDef set_ctrls_other_medkit
 					{
 						rect	260,191,189,18
 						visible	1
 						forecolor	1,1,1,0.8
-						text	"#str_200127"
+						text	"Medkit"
 						textscale	0.24
 						font	"fonts/lowpixel"
 					}
-					windowDef set_ctrls_other_voteyes
+					windowDef set_ctrls_other_cell
 					{
 						rect	260,215,189,18
 						visible	1
 						forecolor	1,1,1,0.8
-						text	"#str_200129"
+						text	"Shield Cell"
 						textscale	0.24
 						font	"fonts/lowpixel"
 					}
-					windowDef set_ctrls_other_voteno
+					windowDef set_ctrls_other_battery
 					{
 						rect	260,239,189,18
 						visible	1
 						forecolor	1,1,1,0.8
-						text	"#str_200130"
+						text	"Shield Battery"
 						textscale	0.24
 						font	"fonts/lowpixel"
 					}
-					windowDef set_ctrls_other_stats
+					windowDef set_ctrls_other_acclerant
 					{
 						rect	260,263,189,18
 						visible	1
 						forecolor	1,1,1,0.8
-						text	"#str_200132"
-						textscale	0.24
-						font	"fonts/lowpixel"
-					}
-					windowDef set_ctrls_other_ready
-					{
-						rect	260,287,189,17
-						visible	1
-						forecolor	1,1,1,0.8
-						text	"#str_201009"
-						textscale	0.24
-						font	"fonts/lowpixel"
-					}
-					windowDef set_ctrls_other_salute
-					{
-						rect	260,311,189,17
-						visible	1
-						forecolor	1,1,1,0.8
-						text	"#str_200311"
-						textscale	0.24
-						font	"fonts/lowpixel"
-					}
-					windowDef set_ctrls_other_cheer
-					{
-						rect	260,335,189,17
-						visible	1
-						forecolor	1,1,1,0.8
-						text	"#str_200312"
-						textscale	0.24
-						font	"fonts/lowpixel"
-					}
-					windowDef set_ctrls_other_taunt
-					{
-						rect	260,359,189,17
-						visible	1
-						forecolor	1,1,1,0.8
-						text	"#str_200313"
-						textscale	0.24
-						font	"fonts/lowpixel"
-					}
-					windowDef set_ctrls_other_grab
-					{
-						rect	260,383,189,17
-						visible	1
-						forecolor	1,1,1,0.8
-						text	"#str_200314"
-						textscale	0.24
-						font	"fonts/lowpixel"
-					}
-					windowDef set_ctrls_other_vchat
-					{
-						rect	260,407,189,17
-						visible	1
-						forecolor	1,1,1,0.8
-						text	"#str_200959"
+						text	"Ultimate Acclerant"
 						textscale	0.24
 						font	"fonts/lowpixel"
 					}
@@ -19196,19 +19058,13 @@ windowDef Desktop
 			set "set_ctrls_attk_objectives_key::noevents" "0" ;
 			set "set_ctrls_attk_flashlight_key::noevents" "0" ;
 			set "set_ctrls_attk_screenshot_key::noevents" "0" ;
-			set "set_ctrls_other_quicksave_key::noevents" "0" ;
-			set "set_ctrls_other_quickload_key::noevents" "0" ;
-			set "set_ctrls_other_chat_key::noevents" "0" ;
-			set "set_ctrls_other_teamchat_key::noevents" "0" ;
-			set "set_ctrls_other_voteyes_key::noevents" "0" ;
-			set "set_ctrls_other_voteno_key::noevents" "0" ;
-			set "set_ctrls_other_stats_key::noevents" "0" ;
-			set "set_ctrls_other_ready_key::noevents" "0" ;
-			set "set_ctrls_other_salute_key::noevents" "0" ;
-			set "set_ctrls_other_cheer_key::noevents" "0" ;
-			set "set_ctrls_other_taunt_key::noevents" "0" ;
-			set "set_ctrls_other_grab_key::noevents" "0" ;
-			set "set_ctrls_other_vchat_key::noevents" "0" ;
+			set "set_ctrls_other_tactical_key::noevents" "0" ;
+			set "set_ctrls_other_cell_key::noevents" "0" ;
+			set "set_ctrls_other_battery_key::noevents" "0" ;
+			set "set_ctrls_other_syringe_key::noevents" "0" ;
+			set "set_ctrls_other_medkit_key::noevents" "0" ;
+			set "set_ctrls_other_ulimate_key::noevents" "0" ;
+			set "set_ctrls_other_acclerant_key::noevents" "0" ;
 		}
 
 		onNamedEvent hideSetControls {
@@ -19259,19 +19115,13 @@ windowDef Desktop
 			set "set_ctrls_attk_objectives_key::noevents" "1" ;
 			set "set_ctrls_attk_flashlight_key::noevents" "1" ;
 			set "set_ctrls_attk_screenshot_key::noevents" "1" ;
-			set "set_ctrls_other_quicksave_key::noevents" "1" ;
-			set "set_ctrls_other_quickload_key::noevents" "1" ;
-			set "set_ctrls_other_chat_key::noevents" "1" ;
-			set "set_ctrls_other_teamchat_key::noevents" "1" ;
-			set "set_ctrls_other_voteyes_key::noevents" "1" ;
-			set "set_ctrls_other_voteno_key::noevents" "1" ;
-			set "set_ctrls_other_stats_key::noevents" "1" ;
-			set "set_ctrls_other_ready_key::noevents" "1" ;
-			set "set_ctrls_other_salute_key::noevents" "1" ;
-			set "set_ctrls_other_cheer_key::noevents" "1" ;
-			set "set_ctrls_other_taunt_key::noevents" "1" ;
-			set "set_ctrls_other_grab_key::noevents" "1" ;
-			set "set_ctrls_other_vchat_key::noevents" "1" ;
+			set "set_ctrls_other_tactical_key::noevents" "1" ;
+			set "set_ctrls_other_cell_key::noevents" "1" ;
+			set "set_ctrls_other_battery_key::noevents" "1" ;
+			set "set_ctrls_other_syringe_key::noevents" "1" ;
+			set "set_ctrls_other_medkit_key::noevents" "1" ;
+			set "set_ctrls_other_ulimate_key::noevents" "1" ;
+			set "set_ctrls_other_acclerant_key::noevents" "1" ;
 		}
 
 		onNamedEvent showSetGameOptions {			

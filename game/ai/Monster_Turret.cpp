@@ -181,12 +181,20 @@ stateResult_t rvMonsterTurret::State_Torso_BlasterAttack ( const stateParms_t& p
 		STAGE_FIRE,
 		STAGE_WAIT,
 	};
+
+	idPlayer* player;
+	player = gameLocal.GetLocalPlayer();
+
 	switch ( parms.stage ) {
 		case STAGE_INIT:
-			DisableAnimState ( ANIMCHANNEL_LEGS );
-			shots = (minShots + gameLocal.random.RandomInt(maxShots-minShots+1)) * combat.aggressiveScale;
-			return SRESULT_STAGE ( STAGE_FIRE );
-			
+			if (DistanceTo(player) < 64) {
+				
+			}
+
+			//DisableAnimState ( ANIMCHANNEL_LEGS );
+			//shots = (minShots + gameLocal.random.RandomInt(maxShots-minShots+1)) * combat.aggressiveScale;
+			//return SRESULT_STAGE ( STAGE_FIRE );
+			return SRESULT_STAGE(STAGE_INIT);
 		case STAGE_FIRE:
 			PlayAnim ( ANIMCHANNEL_TORSO, "range_attack", 2 );
 			return SRESULT_STAGE ( STAGE_WAIT );

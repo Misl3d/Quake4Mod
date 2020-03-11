@@ -59,6 +59,9 @@ const int	IMPULSE_NUMBER_OF_BITS		= 8;							// allows for 2<<X impulses
 
 #define MAX_CONCURRENT_VOICES	3
 
+//////////////////////LEGENDS///////////////////
+
+
 // RAVEN BEGIN
 // jnewquist: Xenon weapon combo system
 #ifdef _XENON
@@ -214,11 +217,21 @@ public:
 	int						medkit;
 	int						accelerant;
 
-	int						maxTact;
-	int						maxUlt;
+	int						cellTime;
+	int						batteryTime;
+	int						syringeTime;
+	int						medkitTime;
+	int						accelerantTime;
 
-	int						ultCharge;
-	int						tactCharge;
+	int						maxTact = 100;
+	int						maxUlt = 100;
+
+	int						ultChargeTime = 0;
+	int						tactChargeTime = 0;
+
+	int						ultCharge	= 0;
+	int						tactCharge  = 0;
+
 
  	// multiplayer
  	int						ammoPredictTime;
@@ -246,6 +259,7 @@ public:
 	void					Clear( void );
 	void					GivePowerUp( idPlayer* player, int powerup, int msec );
 	void					ClearPowerUps( void );
+	void					ApexPickup(idPlayer* player, int apexItem);
 	void					GetPersistantData( idDict &dict );
 	void					RestoreInventory( idPlayer *owner, const idDict &dict );
 	bool					Give( idPlayer *owner, const idDict &spawnArgs, const char *statname, const char *value, int *idealWeapon, bool updateHud, bool dropped = false, bool checkOnly = false );
@@ -303,6 +317,12 @@ public:
 	bool					godmode;
 	int						godmodeDamage;
 	bool					undying;
+	
+	bool lifeline = false;
+	bool mirage = false;
+	bool caustic = false;
+	bool octane = false;
+
 
 	bool					spawnAnglesSet;		// on first usercmd, we must set deltaAngles
 	idAngles				spawnAngles;
@@ -370,6 +390,7 @@ public:
 
 	int						nextUltPulse;
 	int						nextTactPulse;
+	int						nextRegPulse;
 
 	// mp stuff
 	int						spectator;
@@ -899,7 +920,6 @@ private:
 
 	playerTourneyStatus_t	tourneyStatus;
 	bool					isStrogg;
-	bool					isOctane;
 
 	idInterpolate<float>	zoomFov;
 	idInterpolate<float>	centerView;

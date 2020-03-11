@@ -2416,12 +2416,13 @@ void idActor::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &dir
 			}
 			
 			//reduce the damage
-			damage = 0;
+			//DO 1 Damage for FF
+			damage = 1;
 			noDmgFeedback = true;
 		}		
 
 		// reduce friendly fire damage by the teamscale
-		damage = floor( damage * damageDef->GetFloat ( "teamScale", "0.5" ) );
+		//damage = floor( damage * damageDef->GetFloat ( "teamScale", "0.5" ) );
 
 
 	}

@@ -18,6 +18,7 @@
 #include "ai/AAS_tactical.h"
 #include "Healing_Station.h"
 #include "ai/AI_Medic.h"
+#include "time.h"
 
 // RAVEN BEGIN
 // nrausch: support for turning the weapon change ui on and off
@@ -28,6 +29,7 @@
 #include "../sys/xenon/xen_input.h"
 #endif
 // RAVEN END
+
 
 
 
@@ -44,6 +46,12 @@ idCVar net_showPredictionError( "net_showPredictionError", "-1", CVAR_INTEGER | 
 
 ===============================================================================
 */
+void wait(int seconds)
+{ 
+	clock_t endwait; 
+	endwait = clock() + seconds * CLOCKS_PER_SEC;
+	while (clock() < endwait) {}
+}
 
 #ifdef _XENON
 bool g_ObjectiveSystemOpen = false;
@@ -77,7 +85,9 @@ const int	RAGDOLL_DEATH_TIME	= 3000;
 
 
 ////////////////////////////////////////////
-const int ULT_PULSE = 1000;
+const int ULT_PULSE = 500;
+const int TACT_PULSE = 50;
+const int REG_PULSE = 200;
 ///////////////////////////////////////////
 #ifdef _XENON
 	const int	RAGDOLL_DEATH_TIME_XEN_SP	= 1000;
@@ -215,6 +225,7 @@ void idInventory::Clear( void ) {
 
 	memset( ammo, 0, sizeof( ammo ) );
 
+	
 	ClearPowerUps();
 
 	memset( weaponMods, 0, sizeof(weaponMods) );
@@ -264,6 +275,8 @@ void idInventory::ClearPowerUps( void ) {
 	}
 	powerups = 0;
 }
+
+
 
 /*
 ==============
@@ -352,25 +365,11 @@ void idInventory::RestoreInventory( idPlayer *owner, const idDict &dict ) {
 	medkit = dict.GetInt("medkit", "2");
 	accelerant = dict.GetInt("accelerant", "2");
 
-	maxUlt = dict.GetInt("maxUlt", "100");
-	maxTact = dict.GetInt("maxTact", "100");
-
-	ultCharge = dict.GetInt("UltCharge", "0");
-	tactCharge = dict.GetInt("tactCharge", "0");
-
-
-	if (ultCharge < maxUlt){
-		int ultTic = 30;
-		ultCharge += ultTic;
-	}
-
-	if (tactCharge < maxTact){
-		int tactTic = 120;
-		tactCharge += tactTic;
-	}
-
-
-
+	cellTime = dict.GetInt("cellTime", "3");
+	batteryTime = dict.GetInt("batteryTime", "5");
+	syringeTime = dict.GetInt("syringeTime", "5");
+	medkitTime = dict.GetInt("medkitTime", "8");
+	accelerantTime = dict.GetInt("accelerantTime", "7");
 
 
 	// ammo
@@ -1157,6 +1156,7 @@ idPlayer::idPlayer() {
 
 	nextUltPulse = 0;
 	nextTactPulse = 0;
+	nextRegPulse = 0;
 
 	scoreBoardOpen			= false;
 	forceScoreBoard			= false;
@@ -3426,28 +3426,28 @@ void idPlayer::UpdateHudAmmo( idUserInterface *_hud ) {
 idPlayer::UpdateHudStats
 ===============
 */
-void idPlayer::UpdateHudStats( idUserInterface *_hud ) {
+void idPlayer::UpdateHudStats(idUserInterface *_hud) {
 	int temp;
-	
-	assert ( _hud );
 
-	temp = _hud->State().GetInt ( "player_health", "-1" );
-	if ( temp != health ) {		
-		_hud->SetStateInt   ( "player_healthDelta", temp == -1 ? 0 : (temp - health) );
-		_hud->SetStateInt	( "player_health", health < -100 ? -100 : health );
-		_hud->SetStateFloat	( "player_healthpct", idMath::ClampFloat ( 0.0f, 1.0f, (float)health / (float)inventory.maxHealth ) );
-		_hud->HandleNamedEvent ( "updateHealth" );
+	assert(_hud);
+
+	temp = _hud->State().GetInt("player_health", "-1");
+	if (temp != health) {
+		_hud->SetStateInt("player_healthDelta", temp == -1 ? 0 : (temp - health));
+		_hud->SetStateInt("player_health", health < -100 ? -100 : health);
+		_hud->SetStateFloat("player_healthpct", idMath::ClampFloat(0.0f, 1.0f, (float)health / (float)inventory.maxHealth));
+		_hud->HandleNamedEvent("updateHealth");
 	}
-		
-	temp = _hud->State().GetInt ( "player_armor", "-1" );
-	if ( temp != inventory.armor ) {
-		_hud->SetStateInt ( "player_armorDelta", temp == -1 ? -0 : (temp - inventory.armor) );
+
+	temp = _hud->State().GetInt("player_armor", "-1");
+	if (temp != inventory.armor) {
+		_hud->SetStateInt("player_armorDelta", temp == -1 ? -0 : (temp - inventory.armor));
 		//_hud->SetStateInt ( "player_armor", inventory.armor );
 		_hud->SetStateInt("player_armor", inventory.armor < -100 ? -100 : inventory.armor);
-		_hud->SetStateFloat	( "player_armorpct", idMath::ClampFloat ( 0.0f, 1.0f, (float)inventory.armor / (float)inventory.maxarmor ) );
-		_hud->HandleNamedEvent ( "updateArmor" );
+		_hud->SetStateFloat("player_armorpct", idMath::ClampFloat(0.0f, 1.0f, (float)inventory.armor / (float)inventory.maxarmor));
+		_hud->HandleNamedEvent("updateArmor");
 	}
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	temp = _hud->State().GetInt("player_syringe", "4");
 	if (temp != inventory.syringe) {
 		_hud->SetStateInt("player_syringe", inventory.syringe);
@@ -3483,6 +3483,69 @@ void idPlayer::UpdateHudStats( idUserInterface *_hud ) {
 	if (temp != inventory.ultCharge) {
 		_hud->SetStateInt("player_ultimate", inventory.ultCharge);
 		_hud->HandleNamedEvent("updateUlt");
+	}
+
+	temp = _hud->State().GetInt("player_tactical", "0");
+	if (temp != inventory.tactCharge) {
+		_hud->SetStateInt("player_tactical", inventory.tactCharge);
+		_hud->HandleNamedEvent("updateTact");
+	}
+
+
+
+
+	/////////////
+
+	if (gameLocal.time > nextUltPulse){
+		nextUltPulse = gameLocal.time + ULT_PULSE;
+		if (inventory.ultCharge < inventory.maxUlt){
+			inventory.ultCharge++;
+			nextUltPulse += ULT_PULSE;
+		}
+	}
+
+	if (gameLocal.time > nextTactPulse){
+		nextTactPulse = gameLocal.time + TACT_PULSE;
+		if (inventory.tactCharge < inventory.maxTact){
+			inventory.tactCharge++;
+			nextTactPulse += TACT_PULSE;
+		}
+	}
+	
+
+	//OCTANE
+	if (g_skill.GetInteger() == 3){
+		if (inventory.tactCharge == 60){
+			ClearPowerUps();
+		}
+	}
+
+
+
+
+	//MIRAGE
+	if (g_skill.GetInteger() == 1){
+		if (health < 30){
+			GivePowerUp(POWERUP_INVISIBILITY, SEC2MS(5.0f));
+		}
+		else
+		{
+			ClearPowerUps();
+		}
+	}
+
+
+	///HEALTH REGEN
+	if (gameLocal.time > nextRegPulse){
+		nextRegPulse = gameLocal.time + REG_PULSE;
+		if (health != 100){
+			if (g_skill.GetInteger() == 1 || (g_skill.GetInteger() == 3)){
+				if (health < 30 || (g_skill.GetInteger() == 3)){
+					health++;
+				}
+			}
+			nextRegPulse += REG_PULSE;
+		}
 	}
 
 
@@ -4381,7 +4444,7 @@ float idPlayer::PowerUpModifier( int type ) {
 	if ( PowerUpActive( POWERUP_HASTE ) ) {
 		switch ( type ) {
 			case PMOD_SPEED:	
-				mod *= 1.3f;
+				mod *= 3.0f;
 				break;
 
 			case PMOD_FIRERATE:
@@ -7054,10 +7117,10 @@ void idPlayer::UpdateFocus( void ) {
 		}
 		
 		//change crosshair color if over a friendly
-		if ( !gameLocal.isMultiplayer 
+	/*	if ( !gameLocal.isMultiplayer 
 			&& focusType == FOCUS_NONE 
 			&& !g_crosshairCharInfoFar.GetBool() ) {
-			if ( focusLength < 512 ) {
+			if ( focusLength < 0 ) {
 				bool newTargetFriendly = false;
 				if ( isAI && isFriendly ) {
 					newTargetFriendly = true;
@@ -7082,7 +7145,7 @@ void idPlayer::UpdateFocus( void ) {
 				}
 			}
 		}
-
+		*/
 // RAVEN BEGIN
 
 #ifdef _XENON
@@ -7298,7 +7361,7 @@ void idPlayer::UpdateFocus( void ) {
 				ui->SetStateString("player_accelerant", va("%i%%", inventory.accelerant));
 
 				ui->SetStateString("player_ult", va("%i%%", inventory.ultCharge));
-				ui->SetStateString("player_tactical", va("%i%%", inventory.tactCharge));
+				ui->SetStateString("player_tact", va("%i%%", inventory.tactCharge));
 
 
 				kv = ent->spawnArgs.MatchPrefix( "gui_", NULL );
@@ -7373,14 +7436,14 @@ void idPlayer::UpdateFocus( void ) {
 		}
 	}
 #endif
-
+	/*
 	if ( !gameLocal.isMultiplayer || (gameLocal.isMultiplayer && entityNumber == gameLocal.localClientNum) ) {
 		if ( wasTargetFriendly && !targetFriendly && focusType == FOCUS_NONE ) {
 			if ( cursor ) {
 				cursor->HandleNamedEvent ( WeaponIsEnabled() ? "showCrossCombat" : "crossHide" );
 			}
 		}
-	}
+	}*/
 
 	// Update the focus brackets within the hud
 	if ( focusBrackets && hud ) {
@@ -8701,141 +8764,251 @@ void idPlayer::PerformImpulse(int impulse) {
 						 break;
 	}
 		/// Tactical --------------------------------------------------------------------------------------
-	case IMPULSE_61: {
-						 common->Printf("pressed tactical!");
-						 
-						 break;
+	case IMPULSE_61:{
+						common->Printf("pressed tactical!");
+						if (inventory.tactCharge != 100){
+							hud->HandleNamedEvent("tacCharging");
+						}
+						else{
+							inventory.tactCharge = 0;
+							/// LIFELINE				 
+							if (g_skill.GetInteger() == 0){
+
+								common->Printf("pressed tactical! As lifeline");
+								idPlayer* player;
+								player = gameLocal.GetLocalPlayer();
+
+								idDict                healDrone;
+								float                 yaw = gameLocal.GetLocalPlayer()->viewAngles.yaw;
+								healDrone.Set("classname", "char_marine_medic");
+								healDrone.Set("angle", va("%f", yaw + 180));
+
+								idVec3 org = player->GetPhysics()->GetOrigin() + idAngles(0, yaw, 0).ToForward() * 80 + idVec3(0, 5, 1);
+								healDrone.Set("origin", org.ToString());
+
+								idEntity *drone = NULL;
+
+								gameLocal.SpawnEntityDef(healDrone, &drone);
+
+								((idAI*)drone)->team = TEAM_NONE;
+								((idAI*)drone)->SetLeader(gameLocal.GetLocalPlayer());
+								((idAI*)drone)->aifl.undying = false;
+								((idAI*)drone)->move.fl.disabled = true;
+							}
+						}
+
+
+
+						/// MIRAGE
+						if (g_skill.GetInteger() == 1){
+							common->Printf("pressed tactical! As mirage");
+
+						}
+						/// CAUSTIC
+						if (g_skill.GetInteger() == 2){
+							common->Printf("pressed tactical! As caustic");
+						}
+						/// OCTANE
+						if (g_skill.GetInteger() == 3){
+							if (inventory.tactCharge != 100){
+								hud->HandleNamedEvent("tacCharging");
+							}
+							else{
+								inventory.tactCharge = 0;
+								common->Printf("pressed tactical! As octane");
+								GivePowerUp(POWERUP_HASTE, SEC2MS(5.0f));
+							}
+						}
+						break;
 	}
 
 		/// Ultimate --------------------------------------------------------------------------------------
-			case IMPULSE_62: {
-								common->Printf("used ult!");
-								break;
-			}
-			/// Sryinge
-			case IMPULSE_55: {
+	case IMPULSE_62: {
+						 common->Printf("used ult!");
+						 if (inventory.ultCharge != 100){
+							 hud->HandleNamedEvent("ultCharging");
+						 }
+						 else{
+							 inventory.ultCharge = 0;
+							 /// LIFELINE				 
+								 if (g_skill.GetInteger() == 0){
+									idPlayer* player;
+									 player = gameLocal.GetLocalPlayer();
 
-								 if (inventory.syringe == 0){
-									 common->Printf("no syringe");
-									 hud->HandleNamedEvent("noSmallHp");
-									 break;
+									 idDict                airDrop;
+									 float                 yaw = gameLocal.GetLocalPlayer()->viewAngles.yaw;
+									 airDrop.Set("classname", "monster_fatty");
+									 airDrop.Set("angle", va("%f", yaw - 180));
+
+									 idVec3 org = player->GetPhysics()->GetOrigin() + idAngles(0, yaw , 0).ToForward() * 80 + idVec3(0, 100, 1);
+									 airDrop.Set("origin", org.ToString());
+
+									 idEntity *drop = NULL;
+
+									 gameLocal.SpawnEntityDef(airDrop, &drop); 
+
+									 ((idAI*)drop)->team = TEAM_NONE;
+									 ((idAI*)drop)->SetLeader(gameLocal.GetLocalPlayer());
+									 ((idAI*)drop)->aifl.undying = false;
+									 ((idAI*)drop)->aifl.lookAtPlayer = true;
+									 ((idAI*)drop)->aifl.disableAttacks = true;
 								 }
-								 else
-								 {
-									 if (health == 100){
-										 hud->HandleNamedEvent("healthFull");
-									 }
-									 else if (health >= 85 || health <= 99){
-										 health = 100;
-										 inventory.syringe -= 1;
-										 common->Printf("set 100");
-									 }
-									 else {
-										 health += 15;
-										 inventory.syringe -= 1;
-										 common->Printf("added 15");
-									 }
-								 }
-								 break;
-			}
-			
-		/// Medkit
-			case IMPULSE_56: {
-								 if (inventory.medkit == 0)
-								 {
-									 hud->HandleNamedEvent("noBigHp");
-									 common->Printf("no Medkit");
-									 break;
-								 } 
-								 else 
-								 {
-									 if (health == 100) {
-									 hud->HandleNamedEvent("healthFull");
-									 }
-									 else
-									 {
-										 inventory.medkit -= 1;
-										 health = 100;
-									 }
-								 }
+							 /// MIRAGE
+							 if (mirage){
+								 common->Printf("pressed ult! As mirage");
+							 }
+							 /// CAUSTIC
+							 if (caustic){
+								 common->Printf("pressed ult! As caustic");
+							 }
+							 /// OCTANE
+							 if (g_skill.GetInteger() == 3){
+								 idPlayer* player;
+								 player = gameLocal.GetLocalPlayer();
 
-			break;
-			}
+								 idDict                jumpPad;
+								 float                 yaw = gameLocal.GetLocalPlayer()->viewAngles.yaw;
+								 jumpPad.Set("classname", "monster_fatty");
+								 jumpPad.Set("angle", va("%f", yaw - 180));
 
-			/// Cell
-			case IMPULSE_57: {
-								 if (inventory.cell == 0){
-									 common->Printf("no shield");
-									 hud->HandleNamedEvent("noSmallSd");
-								 }
-								 else
-								 {
-									 if (inventory.armor == 100){
-										 hud->HandleNamedEvent("shieldFull");
-									 }
-									 else if (inventory.armor >= 75 || inventory.armor <= 99){
-										 inventory.armor = 100;
-										 inventory.cell -= 1;
-										 common->Printf("set 100");
-									 }
-									 else {
-										 inventory.armor += 25;
-										 inventory.cell -= 1;
-										 common->Printf("added 25 shield");
-									 }
-								 }
-								 break;
-			}
+								 idVec3 org = player->GetPhysics()->GetOrigin() + idAngles(0, yaw, 0).ToForward() * 80 + idVec3(0, 1, 1);
+								 jumpPad.Set("origin", org.ToString());
 
-			/// Battery
-			case IMPULSE_58: {
-								 if (inventory.battery == 0)
-								 {
-									 hud->HandleNamedEvent("noBigSd");
-									 common->Printf("no Shield");
-								 }
-								 else
-								 {
+								 idEntity *pad = NULL;
 
-									 if (inventory.armor == 100) {
-										 hud->HandleNamedEvent("shieldFull");
-									 }
-									 else
-									 inventory.battery -= 1;
-									 inventory.armor = 100;
-								 }
-								 break;
-			}
+								 gameLocal.SpawnEntityDef(jumpPad, &pad);
 
-			/// Accelerant
-			case IMPULSE_59: {
-			common->Printf("used accelerant!");
-			if (inventory.accelerant == 0){
-				hud->HandleNamedEvent("noACl");
-				common->Printf("no Acl");
-			}
-			else
-			{
-				if (inventory.ultCharge == 100){
-					hud->HandleNamedEvent("ultFull");
-					common->Printf("UltFull");
-				}
-				else if (inventory.ultCharge >= 50){
-					inventory.ultCharge = 100;
-					inventory.accelerant -= 1;
-					common->Printf("ULT Set to 100");
-				}
-				else{
-					inventory.ultCharge += 50;
-					common->Printf("+50 to Ult");
-				}
-			}
-			break;
-			}
+								 ((idAI*)pad)->team = TEAM_NONE;
+								 ((idAI*)pad)->aifl.undying = false;
+								 ((idAI*)pad)->aifl.lookAtPlayer = true;
+								 ((idAI*)pad)->aifl.disableAttacks = true;
+							 }
 
+							 }
 
-			
+							 break;
+						 }
 	}
+						 /// Sryinge
+	case IMPULSE_55: {
+
+						 if (inventory.syringe == 0){
+							 common->Printf("no syringe");
+							 hud->HandleNamedEvent("noSmallHp");
+							 break;
+						 }
+						 if (health == 100){
+							 hud->HandleNamedEvent("healthFull");
+						 }
+
+						 else if (health < 85){
+							 health += 15;
+							 inventory.syringe -= 1;
+						 }
+						 else
+						 {
+							 health = 100;
+							 inventory.syringe -= 1;
+						 }
+						 break;
+	}
+
+						 /// Medkit
+	case IMPULSE_56: {
+						 if (inventory.medkit == 0)
+						 {
+							 hud->HandleNamedEvent("noBigHp");
+							 common->Printf("no Medkit");
+							 break;
+						 }
+						 else
+						 {
+							 if (health == 100) {
+								 hud->HandleNamedEvent("healthFull");
+							 }
+							 else
+							 {
+								 inventory.medkit -= 1;
+								 health = 100;
+							 }
+						 }
+
+						 break;
+	}
+
+						 /// Cell
+	case IMPULSE_57: {
+						 if (inventory.cell == 0){
+							 hud->HandleNamedEvent("noSmallSd");
+						 }
+						 else
+						 {
+							 if (inventory.armor == 100){
+								 hud->HandleNamedEvent("shieldFull");
+							 }
+							 else if (inventory.armor < 75){
+								 inventory.armor += 25;
+								 inventory.cell -= 1;
+							 }
+							 else {
+								 inventory.armor = 100;
+								 inventory.cell -= 1;
+							 }
+						 }
+						 break;
+	}
+
+						 /// Battery
+	case IMPULSE_58: {
+						 if (inventory.battery == 0)
+						 {
+							 hud->HandleNamedEvent("noBigSd");
+							 common->Printf("no Shield");
+						 }
+						 else
+						 {
+
+							 if (inventory.armor == 100) {
+								 hud->HandleNamedEvent("shieldFull");
+							 }
+							 else
+								 inventory.battery -= 1;
+							 inventory.armor = 100;
+						 }
+						 break;
+	}
+
+						 /// Accelerant
+	case IMPULSE_59: {
+						 common->Printf("used accelerant!");
+						 if (inventory.accelerant == 0){
+							 hud->HandleNamedEvent("noACl");
+							 common->Printf("no Acl");
+						 }
+						 else
+						 {
+							 if (inventory.ultCharge == 100){
+								 hud->HandleNamedEvent("ultFull");
+								 common->Printf("UltFull");
+							 }
+							 else if (inventory.ultCharge >= 50){
+								 inventory.ultCharge = 100;
+								 inventory.accelerant -= 1;
+								 common->Printf("ULT Set to 100");
+							 }
+							 else{
+								 inventory.ultCharge += 50;
+								 inventory.accelerant -= 1;
+								 common->Printf("+50 to Ult");
+							 }
+						 }
+						 break;
+	}
+	}
+
+
+			
+
 
 //RAVEN BEGIN
 //asalmon: route d-pad input to the active gui.
@@ -8973,7 +9146,8 @@ void idPlayer::AdjustSpeed( void ) {
  	} else if ( !physicsObj.OnLadder() && ( usercmd.buttons & BUTTON_RUN ) && ( usercmd.forwardmove || usercmd.rightmove ) && ( usercmd.upmove >= 0 ) ) {
 		bobFrac = 1.0f;
 		speed = pm_speed.GetFloat();
-	} else {
+	}
+	else {
 		speed = pm_walkspeed.GetFloat();
 		bobFrac = 0.0f;
 	}
@@ -8981,7 +9155,8 @@ void idPlayer::AdjustSpeed( void ) {
 	speed *= PowerUpModifier(PMOD_SPEED);
 
 	if ( influenceActive == INFLUENCE_LEVEL3 ) {
-		speed *= 0.33f;
+		
+
 	}
 
 	physicsObj.SetSpeed( speed, pm_crouchspeed.GetFloat() );
@@ -10209,20 +10384,24 @@ void idPlayer::CalcDamagePoints( idEntity *inflictor, idEntity *attacker, const 
 					//damage = ceil(0.80f*(float)damage);
 					//isLifeline == true;
 					common->Printf("LIFELINE IS HERE!");
+					lifeline = true;
 					break;
 				case 1:
 				//	isMirage == true;
 					common->Printf("MIRAGE IS HERE!");
+					mirage = true;
 					break;
 				case 2:
 					//damage *= 1.7f;
 					//isCaustic == true;
 					common->Printf("CAUSTIC IS HERE!");
+					caustic = true;
 					break;
 				case 3:
  					//damage *= 3.5f;
 					//isOctane == true;
 					common->Printf("OCTANE IS HERE!");
+					octane = true;
 					break;
 				default:
 					//damage *= 1.1f;  reverted to 1.0 for default damage... as per Biessman's request.
@@ -10282,7 +10461,7 @@ void idPlayer::CalcDamagePoints( idEntity *inflictor, idEntity *attacker, const 
  		&& player
  		&& player != this		// you get self damage no matter what
  		&& player->team == team ) {
- 			damage = 0;
+ 			damage = damage;
  	}
 
 	*health = damage;

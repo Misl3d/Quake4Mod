@@ -598,6 +598,9 @@ bool idItem::GiveToPlayer( idPlayer *player ) {
 		if ( player->weapon->TotalAmmoCount() != player->weapon->maxAmmo && player->weapon->AmmoRequired() ) {
 			player->GiveItem(ammoName);
 			player->GiveInventoryItem( &spawnArgs );
+			
+
+
 			return true;
 		}
 		return false;

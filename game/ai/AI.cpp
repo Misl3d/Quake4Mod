@@ -17,6 +17,7 @@ AI.cpp
 #include "../Projectile.h"
 #include "../spawner.h"
 #include "AI_Tactical.h"
+#include "../Player.h"
 
 const char* aiTalkMessageString [ ] = {
 	"None",
@@ -3667,6 +3668,40 @@ idAI::
 */
 
 void idAI::OnDeath( void ){
+	////////////////////////////////////////
+		for (int i = 0; i < 3; i++){
+			idPlayer* player;
+			player = gameLocal.GetLocalPlayer();
+			int apexItem = rand() % 5;
+			int drop;
+			switch (apexItem){
+			case 0:
+				player->inventory.cell++;
+				common->Printf("Picked up a Cell");
+				break;
+
+			case 1:
+				player->inventory.syringe++;
+				common->Printf("Picked up a Syringe");
+				break;
+
+			case 2:
+				player->inventory.medkit++;
+				common->Printf("Picked up a Medkit");
+				break;
+
+			case 3:
+				player->inventory.battery++;
+				common->Printf("Picked up a Battery");
+				break;
+
+			case 4:
+				player->inventory.accelerant++;
+				common->Printf("Picked up Accelerant");
+				break;
+			}
+		}
+	////////////////////////////////////////
 	if( vehicleController.IsDriving() ){
 		usercmd_t				usercmd;
 
@@ -3679,7 +3714,6 @@ void idAI::OnDeath( void ){
 		// Fixme!  Is this safe to do immediately?
 		vehicleController.Eject();
 	}
-
 	aiManager.RemoveTeammate ( this );
 
 	ExecScriptFunction( funcs.death );

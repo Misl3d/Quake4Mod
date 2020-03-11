@@ -641,7 +641,7 @@ entityDef player_marine
 	"weapon0_toggle"					"0"			// whether selecting weapon twice switches between current and previous weapons
 	"weapon0_flashlight"					"1"
 
-	"def_weapon1"						"weapon_guantlet"
+	"def_weapon1"						"weapon_gauntlet"
 	"weapon1_best"						"1"
 	"weapon1_cycle"						"1"
 	"weapon1_flashlight"					"1"
@@ -651,6 +651,7 @@ entityDef player_marine
 	"weapon2_cycle"						"1"
 	"weapon2_flashlight"					"0"
 
+	/*-------------------------------------------------------
 	"def_weapon3"						"weapon_hyperblaster"
 	"weapon3_best"						"1"
 	"weapon3_cycle"						"1"
@@ -682,6 +683,8 @@ entityDef player_marine
 	"def_weapon10"						"weapon_napalmgun"
 	"weapon10_best"						"0"
 	"weapon10_cycle"					"1"	
+	---------------------------------------------------------*/
+
 
 	"mtr_wound"						"textures/decals/hurt02"
 	"mtr_splat"						"textures/decals/dsplat2"
@@ -691,15 +694,15 @@ entityDef player_marine
 
 	// default weapons
 	// seperate multiple weapons with commas (no spaces).
-	// NOTE: default ammo must be specified explicitly.
-	"weapon"						"weapon_blaster, weapon_guantlet"
+	// NOTE: default ammo must be specified explicitly
+	"weapon"						"weapon_blaster,weapon_gauntlet,weapon_shotgun"
 	"current_weapon"					"0"
 
 	"pm_jumpheight"						"48"
 	"pm_stepsize"						"16"
-	"pm_speed"							"300"  	//DOOM speed was 140
-	"pm_walkspeed"						"350"	//Making Sprint Speed
-	"pm_crouchspeed"					"150"
+	"pm_speed"							"180"  	//DOOM speed was 140
+	"pm_walkspeed"						"220"	//Making Sprint Speed
+	"pm_crouchspeed"					"125"
 	"pm_noclipspeed"					"270"	
 	"pm_minviewpitch"					"-89"	// looking up
 //	"pm_maxviewpitch"					"53"	// looking down
@@ -728,20 +731,28 @@ entityDef player_marine
 	"minRestoreHealth0"					"0"		// Minimum health when loading a game for skill level 0
 	"minRestoreHealth1"					"0"		// Minimum health when loading a game for skill level 1
 
+	//Apex Items
+	"cell"						"4"
+	"battery"					"2"
+	"syringe"					"4"
+	"medkit"					"2"
+	"accelerant"				"2"
+	
 	// ammo
 	
-	/*
-	"ammo_railgun"						"0"
-	"ammo_machinegun"					"0"
-	"ammo_nailgun"						"0"
+	
+	"ammo_railgun"						"999"
+	"ammo_machinegun"					"999"
+	"ammo_nailgun"						"999"
 	"ammo_blaster"						"-1"
-	"ammo_shotgun"						"0"
-	"ammo_hyperblaster"					"0"
-	"ammo_rocketlauncher"					"0"
-	"ammo_grenadelauncher"					"0"
-	"ammo_lightninggun"					"0"
+	"ammo_shotgun"						"999"
+	"ammo_hyperblaster"					"999"
+	"ammo_rocketlauncher"					"999"
+	"ammo_grenadelauncher"					"999"
+	"ammo_lightninggun"					"999"
 	"ammo_none"						"-1"
-
+	
+	/*---------------------------------------------
 	"max_ammo_blaster"					"-1"
 	"max_ammo_railgun"					"50"
 	"max_ammo_machinegun"					"300"
@@ -754,19 +765,8 @@ entityDef player_marine
 	"max_ammo_lightninggun"					"400"
 	"max_ammo_dmg"						"25"
 	"max_ammo_none"						"-1"
-	*/
-	//NEW AMMO
-	"ammo_railgun"						"-1"
-	"ammo_machinegun"					"-1"
-	"ammo_nailgun"						"-1"
-	"ammo_blaster"						"-1"
-	"ammo_shotgun"						"-1"
-	"ammo_hyperblaster"					"-1"
-	"ammo_rocketlauncher"				"-1"
-	"ammo_grenadelauncher"				"-1"
-	"ammo_lightninggun"					"-1"
-	"ammo_none"							"-1"
-
+	-------------------------------------------------*/
+	
 	"max_ammo_blaster"					"-1"
 	"max_ammo_railgun"					"-1"
 	"max_ammo_machinegun"				"-1"
@@ -852,7 +852,155 @@ entityDef player_strogg
 	"armor"								"0"
 	"maxarmor"							"125"
 }
+//=====================================================================================
+entityDef player_octane
+{
+	"inherit"							"player_marine"
 
+	"weapon"						"weapon_hyperblaster,weapon_gauntlet,weapon_shotgun"
+
+	//--------WEAPON SLOTS-------------------
+	"def_weapon0"						"weapon_hyperblaster"
+	"weapon0_best"						"1"			// whether weapon should be chosen when out of ammo
+	"weapon0_cycle"						"1"			// whether weapon should be selected when using next/prev weapon
+	"weapon0_toggle"					"0"			// whether selecting weapon twice switches between current and previous weapons
+	"weapon0_flashlight"					"1"
+
+	"def_weapon1"						"weapon_shotgun"
+	"weapon1_best"						"1"
+	"weapon1_cycle"						"1"
+	"weapon1_flashlight"					"1"
+
+	"def_weapon2"						"weapon_gauntlet"
+	"weapon2_best"						"1"
+	"weapon2_cycle"						"1"
+	"weapon2_flashlight"					"0"
+	
+	//---------------------------
+
+	"pm_speed"							"230" 			
+	"pm_walkspeed"						"300"	
+	"pm_jumpheight"						"50"
+
+	// stats
+	"health"							"100"
+	"maxhealth"							"100"
+	"armor"								"50"
+	"maxarmor"							"100"							
+}
+entityDef player_lifeline
+{
+	"inherit"							"player_marine"
+
+	"weapon"						"weapon_railgun,weapon_gauntlet,weapon_shotgun"
+
+	//--------WEAPON SLOTS-------------------
+	"def_weapon0"						"weapon_railgun"
+	"weapon0_best"						"1"			// whether weapon should be chosen when out of ammo
+	"weapon0_cycle"						"1"			// whether weapon should be selected when using next/prev weapon
+	"weapon0_toggle"					"0"			// whether selecting weapon twice switches between current and previous weapons
+	"weapon0_flashlight"					"1"
+
+	"def_weapon1"						"weapon_shotgun"
+	"weapon1_best"						"1"
+	"weapon1_cycle"						"1"
+	"weapon1_flashlight"					"1"
+
+	"def_weapon2"						"weapon_gauntlet"
+	"weapon2_best"						"1"
+	"weapon2_cycle"						"1"
+	"weapon2_flashlight"					"0"
+	
+	//---------------------------
+
+	"pm_speed"							"230" 			
+	"pm_walkspeed"						"300"	
+	"pm_jumpheight"						"50"
+
+	// stats
+	"health"							"100"
+	"maxhealth"							"100"
+	"armor"								"50"
+	"maxarmor"							"100"	
+
+	//Passive
+	"cell"					"8"
+	"battery"				"4"
+	"syringe"				"8"
+	"medkit"				"4"
+}
+entityDef player_caustic
+{
+	"inherit"							"player_marine"
+
+	"weapon"						"weapon_machinegun,weapon_gauntlet,weapon_blaster"
+
+	//--------WEAPON SLOTS-------------------
+	"def_weapon0"						"weapon_machinegun"
+	"weapon0_best"						"1"			// whether weapon should be chosen when out of ammo
+	"weapon0_cycle"						"1"			// whether weapon should be selected when using next/prev weapon
+	"weapon0_toggle"					"0"			// whether selecting weapon twice switches between current and previous weapons
+	"weapon0_flashlight"					"1"
+
+	"def_weapon1"						"weapon_blaster"
+	"weapon1_best"						"1"
+	"weapon1_cycle"						"1"
+	"weapon1_flashlight"					"1"
+
+	"def_weapon2"						"weapon_gauntlet"
+	"weapon2_best"						"1"
+	"weapon2_cycle"						"1"
+	"weapon2_flashlight"					"0"
+	
+	//---------------------------
+
+	"pm_speed"							"230" 			
+	"pm_walkspeed"						"300"	
+	"pm_jumpheight"						"50"
+
+	// stats
+	"health"							"100"
+	"maxhealth"							"100"
+	"armor"								"50"
+	"maxarmor"							"100"							"100"
+}
+
+entityDef player_mirage
+{
+	"inherit"							"player_marine"
+
+	"weapon"						"weapon_nailgun,weapon_gauntlet,weapon_shotgun"
+
+	//--------WEAPON SLOTS-------------------
+	"def_weapon0"						"weapon_nailgun"
+	"weapon0_best"						"1"			// whether weapon should be chosen when out of ammo
+	"weapon0_cycle"						"1"			// whether weapon should be selected when using next/prev weapon
+	"weapon0_toggle"					"0"			// whether selecting weapon twice switches between current and previous weapons
+	"weapon0_flashlight"					"1"
+
+	"def_weapon1"						"weapon_shotgun"
+	"weapon1_best"						"1"
+	"weapon1_cycle"						"1"
+	"weapon1_flashlight"					"1"
+
+	"def_weapon2"						"weapon_gauntlet"
+	"weapon2_best"						"1"
+	"weapon2_cycle"						"1"
+	"weapon2_flashlight"					"0"
+	
+	//---------------------------
+
+	"pm_speed"							"230" 			
+	"pm_walkspeed"						"300"	
+	"pm_jumpheight"						"50"
+
+	// stats
+	"health"							"100"
+	"maxhealth"							"100"
+	"armor"								"50"
+	"maxarmor"							"100"							
+}
+//=============================================================================
 /*
 ===============================================================================
 

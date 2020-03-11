@@ -34,7 +34,7 @@ rvAIMedic::rvAIMedic ( void ) {
 	healing = false;
 	lastPatientCheckTime = 0;
 	emergencyOverride = false;
-	//healedAmount = 0;
+	healedAmount = 0;
 	healDisabled = false;
 	wasAware = false;
 	wasIgnoreEnemies = false;

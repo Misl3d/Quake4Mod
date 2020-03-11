@@ -8321,7 +8321,7 @@ bool idPlayer::AttemptToBuyTeamPowerup( const char* itemName )
 	idStr itemNameStr = itemName;
 
 	if ( itemNameStr == "ammo_regen" ) {
-		gameLocal.mpGame.AddTeamPowerup(POWERUP_AMMOREGEN, SEC2MS(30), team);
+		gameLocal.mpGame.AddTeamPowerup(POWERUP_AMMOREGEN, (30), team);
 		UpdateTeamPowerups( true );
 		return true;
 	}
