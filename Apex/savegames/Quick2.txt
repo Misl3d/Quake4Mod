@@ -1,3 +1,0 @@
-"Quick2"
-"^:Quicksave	^0AIR DEFENSE BUNKER"
-""

@@ -656,6 +656,8 @@ public:
 	int						CanSelectWeapon				( const char* weaponName );
 	int						GetItemCost(const char* itemName);
 // RITUAL END
+	void					spawnDecoy(void);
+
 	void					PerformImpulse( int impulse );
 	void					Spectate( bool spectate, bool force = false );
  	void					ToggleObjectives ( void );

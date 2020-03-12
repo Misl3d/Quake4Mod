@@ -320,10 +320,15 @@ stateResult_t rvMonsterRepairBot::State_TorsoAction_Repair ( const stateParms_t&
 	};
 	switch ( parms.stage ) {
 		case STAGE_INIT:
+			
+			/*
 			DisableAnimState ( ANIMCHANNEL_LEGS );
 			PlayCycle ( ANIMCHANNEL_TORSO, "repair", 4 );
 			repairEndTime = gameLocal.time + SEC2MS(scriptedActionEnt->spawnArgs.GetInt ( "duration", "5" ) );
 			PostAnimState ( ANIMCHANNEL_TORSO, "TorsoAction_RepairDone", 0, 0, SFLAG_ONCLEAR );
+			*/
+
+
 			return SRESULT_STAGE(STAGE_REPAIR);
 			
 		case STAGE_REPAIR:

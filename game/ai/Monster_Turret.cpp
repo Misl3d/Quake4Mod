@@ -188,15 +188,18 @@ stateResult_t rvMonsterTurret::State_Torso_BlasterAttack ( const stateParms_t& p
 	switch ( parms.stage ) {
 		case STAGE_INIT:
 			if (DistanceTo(player) < 64) {
-				
+				common->Printf("He Touched ME!");
+				return SRESULT_STAGE(STAGE_FIRE);
 			}
 
 			//DisableAnimState ( ANIMCHANNEL_LEGS );
 			//shots = (minShots + gameLocal.random.RandomInt(maxShots-minShots+1)) * combat.aggressiveScale;
 			//return SRESULT_STAGE ( STAGE_FIRE );
-			return SRESULT_STAGE(STAGE_INIT);
+			
 		case STAGE_FIRE:
-			PlayAnim ( ANIMCHANNEL_TORSO, "range_attack", 2 );
+			if (DistanceTo(player) < 32) {
+				PlayAnim(ANIMCHANNEL_TORSO, "range_attack", 2);
+			}
 			return SRESULT_STAGE ( STAGE_WAIT );
 
 		case STAGE_WAIT:

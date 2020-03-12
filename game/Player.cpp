@@ -3428,6 +3428,8 @@ idPlayer::UpdateHudStats
 */
 void idPlayer::UpdateHudStats(idUserInterface *_hud) {
 	int temp;
+	idPlayer* player;
+	player = gameLocal.GetLocalPlayer();
 
 	assert(_hud);
 
@@ -3518,20 +3520,36 @@ void idPlayer::UpdateHudStats(idUserInterface *_hud) {
 		if (inventory.tactCharge == 60){
 			ClearPowerUps();
 		}
+		if (inventory.ultCharge > 10){
+			player->physicsObj.SetMaxJumpHeight(pm_jumpheight.GetFloat());
+		}
 	}
 
-
-
-
-	//MIRAGE
-	if (g_skill.GetInteger() == 1){
-		if (health < 30){
+	if (g_skill.GetInteger() == 2){
+		if (player->physicsObj.IsCrouching()) {
 			GivePowerUp(POWERUP_INVISIBILITY, SEC2MS(5.0f));
 		}
 		else
 		{
 			ClearPowerUps();
 		}
+	}
+
+	//MIRAGE
+	if (g_skill.GetInteger() == 1){
+
+		if (health < 30){
+			GivePowerUp(POWERUP_INVISIBILITY, SEC2MS(5.0f));
+		}
+		else if (health == 30)
+		{
+			ClearPowerUps();
+		}
+
+		if (inventory.ultCharge == 5){
+			ClearPowerUps();
+		}
+
 	}
 
 
@@ -8578,6 +8596,31 @@ void idPlayer::GenerateImpulseForBuyAttempt( const char* itemName ) {
 // RITUAL END
 
 
+void idPlayer::spawnDecoy(void){
+		idPlayer* player;
+		player = gameLocal.GetLocalPlayer();
+
+		idDict                decoy;
+		float                 yaw = gameLocal.GetLocalPlayer()->viewAngles.yaw;
+		decoy.Set("classname", "char_marine");
+		decoy.Set("angle", va("%f", yaw + 180));
+
+		int ranX = rand() % 100;
+		int ranY = rand() % 100;
+		int ranZ = rand() % 100;
+
+		idVec3 org = player->GetPhysics()->GetOrigin() + idAngles(0, yaw, 0).ToForward() * 80 + idVec3(1 + ranX, 1 + ranY, 1 + ranZ);
+		decoy.Set("origin", org.ToString());
+
+		idEntity *fake = NULL;
+
+		gameLocal.SpawnEntityDef(decoy, &fake);
+
+		((idAI*)fake)->team = gameLocal.GetLocalPlayer()->team;
+		((idAI*)fake)->aifl.undying = false;
+		((idAI*)fake)->move.fl.disabled = true;
+}
+
 /*
 ==============
 idPlayer::PerformImpulse
@@ -8767,7 +8810,7 @@ void idPlayer::PerformImpulse(int impulse) {
 	case IMPULSE_61:{
 						common->Printf("pressed tactical!");
 						if (inventory.tactCharge != 100){
-							hud->HandleNamedEvent("tacCharging");
+							hud->HandleNamedEvent("tactCharging");
 						}
 						else{
 							inventory.tactCharge = 0;
@@ -8783,25 +8826,41 @@ void idPlayer::PerformImpulse(int impulse) {
 								healDrone.Set("classname", "char_marine_medic");
 								healDrone.Set("angle", va("%f", yaw + 180));
 
-								idVec3 org = player->GetPhysics()->GetOrigin() + idAngles(0, yaw, 0).ToForward() * 80 + idVec3(0, 5, 1);
+								idVec3 org = player->GetPhysics()->GetOrigin() + idAngles(0, yaw, 0).ToForward() * 80 + idVec3(0, 5, 11);
 								healDrone.Set("origin", org.ToString());
 
 								idEntity *drone = NULL;
 
 								gameLocal.SpawnEntityDef(healDrone, &drone);
 
-								((idAI*)drone)->team = TEAM_NONE;
+								((idAI*)drone)->team = gameLocal.GetLocalPlayer()->team;
 								((idAI*)drone)->SetLeader(gameLocal.GetLocalPlayer());
 								((idAI*)drone)->aifl.undying = false;
-								((idAI*)drone)->move.fl.disabled = true;
 							}
-						}
 
 
 
-						/// MIRAGE
+						/// MIRAGE char_marine
 						if (g_skill.GetInteger() == 1){
 							common->Printf("pressed tactical! As mirage");
+							idPlayer* player;
+							player = gameLocal.GetLocalPlayer();
+
+							idDict                decoy;
+							float                 yaw = gameLocal.GetLocalPlayer()->viewAngles.yaw;
+							decoy.Set("classname", "char_marine");
+							decoy.Set("angle", va("%f", yaw + 180));
+
+							idVec3 org = player->GetPhysics()->GetOrigin() + idAngles(0, yaw, 0).ToForward() * 80 + idVec3(0, 5, 1);
+							decoy.Set("origin", org.ToString());
+
+							idEntity *fake = NULL;
+
+							gameLocal.SpawnEntityDef(decoy, &fake);
+
+							((idAI*)fake)->team = gameLocal.GetLocalPlayer()->team;
+							((idAI*)fake)->SetLeader(gameLocal.GetLocalPlayer());
+							((idAI*)fake)->aifl.undying = false;
 
 						}
 						/// CAUSTIC
@@ -8810,20 +8869,18 @@ void idPlayer::PerformImpulse(int impulse) {
 						}
 						/// OCTANE
 						if (g_skill.GetInteger() == 3){
-							if (inventory.tactCharge != 100){
-								hud->HandleNamedEvent("tacCharging");
-							}
-							else{
-								inventory.tactCharge = 0;
 								common->Printf("pressed tactical! As octane");
 								GivePowerUp(POWERUP_HASTE, SEC2MS(5.0f));
 							}
 						}
+
 						break;
 	}
 
 		/// Ultimate --------------------------------------------------------------------------------------
 	case IMPULSE_62: {
+						 idPlayer* player;
+						 player = gameLocal.GetLocalPlayer();
 						 common->Printf("used ult!");
 						 if (inventory.ultCharge != 100){
 							 hud->HandleNamedEvent("ultCharging");
@@ -8832,30 +8889,47 @@ void idPlayer::PerformImpulse(int impulse) {
 							 inventory.ultCharge = 0;
 							 /// LIFELINE				 
 								 if (g_skill.GetInteger() == 0){
-									idPlayer* player;
-									 player = gameLocal.GetLocalPlayer();
+									 for (int i = 0; i < 30; i++){
+										 int apexItem = rand() % 5;
+										 int drop;
+										 switch (apexItem){
+										 case 0:
+											 inventory.cell++;
+											 common->Printf("Picked up a Cell");
+											 break;
 
-									 idDict                airDrop;
-									 float                 yaw = gameLocal.GetLocalPlayer()->viewAngles.yaw;
-									 airDrop.Set("classname", "monster_fatty");
-									 airDrop.Set("angle", va("%f", yaw - 180));
+										 case 1:
+											 inventory.syringe++;
+											 common->Printf("Picked up a Syringe");
+											 break;
 
-									 idVec3 org = player->GetPhysics()->GetOrigin() + idAngles(0, yaw , 0).ToForward() * 80 + idVec3(0, 100, 1);
-									 airDrop.Set("origin", org.ToString());
+										 case 2:
+											 inventory.medkit++;
+											 common->Printf("Picked up a Medkit");
+											 break;
 
-									 idEntity *drop = NULL;
+										 case 3:
+											 inventory.battery++;
+											 common->Printf("Picked up a Battery");
+											 break;
 
-									 gameLocal.SpawnEntityDef(airDrop, &drop); 
-
-									 ((idAI*)drop)->team = TEAM_NONE;
-									 ((idAI*)drop)->SetLeader(gameLocal.GetLocalPlayer());
-									 ((idAI*)drop)->aifl.undying = false;
-									 ((idAI*)drop)->aifl.lookAtPlayer = true;
-									 ((idAI*)drop)->aifl.disableAttacks = true;
+										 case 4:
+											 inventory.accelerant++;
+											 common->Printf("Picked up Accelerant");
+											 break;
+										 }
+									 }
 								 }
 							 /// MIRAGE
-							 if (mirage){
+							if (g_skill.GetInteger() == 1){
+								 GivePowerUp(POWERUP_INVISIBILITY, SEC2MS(5.0f));
 								 common->Printf("pressed ult! As mirage");
+
+								 spawnDecoy();
+								 spawnDecoy();
+								 spawnDecoy();
+								 spawnDecoy();
+								 spawnDecoy();
 							 }
 							 /// CAUSTIC
 							 if (caustic){
@@ -8863,34 +8937,15 @@ void idPlayer::PerformImpulse(int impulse) {
 							 }
 							 /// OCTANE
 							 if (g_skill.GetInteger() == 3){
-								 idPlayer* player;
-								 player = gameLocal.GetLocalPlayer();
-
-								 idDict                jumpPad;
-								 float                 yaw = gameLocal.GetLocalPlayer()->viewAngles.yaw;
-								 jumpPad.Set("classname", "monster_fatty");
-								 jumpPad.Set("angle", va("%f", yaw - 180));
-
-								 idVec3 org = player->GetPhysics()->GetOrigin() + idAngles(0, yaw, 0).ToForward() * 80 + idVec3(0, 1, 1);
-								 jumpPad.Set("origin", org.ToString());
-
-								 idEntity *pad = NULL;
-
-								 gameLocal.SpawnEntityDef(jumpPad, &pad);
-
-								 ((idAI*)pad)->team = TEAM_NONE;
-								 ((idAI*)pad)->aifl.undying = false;
-								 ((idAI*)pad)->aifl.lookAtPlayer = true;
-								 ((idAI*)pad)->aifl.disableAttacks = true;
+								 player->physicsObj.SetMaxJumpHeight(1000);
 							 }
 
 							 }
 
 							 break;
 						 }
-	}
 						 /// Sryinge
-	case IMPULSE_55: {
+				case IMPULSE_55: {
 
 						 if (inventory.syringe == 0){
 							 common->Printf("no syringe");
@@ -9211,8 +9266,11 @@ void idPlayer::AdjustBodyAngles( void ) {
 		}
 	}
 
-	if ( !physicsObj.IsCrouching() ) {
+	if (!physicsObj.IsCrouching()) {
 		legsForward = true;
+		if (g_skill.GetInteger() == 2){
+			ClearPowerUps();
+		}
 	}
 
 	oldViewYaw = viewAngles.yaw;
@@ -13978,7 +14036,7 @@ const char* idPlayer::GetSpawnClassname ( void ) {
 
 	if ( g_skill.GetInteger() == 2){
 		common->Printf("CAUSTIC IS HERE!");
-		return "player_caustic";
+		return "player_revenant";
 	}
 
 	if ( g_skill.GetInteger() == 3){

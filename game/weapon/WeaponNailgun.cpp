@@ -651,16 +651,17 @@ stateResult_t rvWeaponNailgun::State_Fire( const stateParms_t& parms ) {
 				SetState ( "Idle", parms.blendFrames );				
 				return SRESULT_DONE;
 			}
-			if ( DrumSpin ( NAILGUN_DRUMSPEED_FAST, 2 ) ) {
-				PostState ( "Fire", 2 );
-				return SRESULT_DONE;
-			}
-			nextAttackTime = gameLocal.time;
+			//if ( DrumSpin ( NAILGUN_DRUMSPEED_FAST, 2 ) ) {
+			//	PostState ( "Fire", 2 );
+			//	return SRESULT_DONE;
+			//}
+			//nextAttackTime = gameLocal.time;
 			
 			return SRESULT_STAGE ( STAGE_FIRE );
 			
 		case STAGE_FIRE:
-			if ( !wsfl.attack || wsfl.reload || wsfl.lowerWeapon || AmmoInClip ( ) <= 0 ) {
+			Attack(false, 1, spread, 0.0f, 1.0f);
+			/*if ( !wsfl.attack || wsfl.reload || wsfl.lowerWeapon || AmmoInClip ( ) <= 0 ) {
 				return SRESULT_STAGE ( STAGE_DONE );
 			}
 			if ( mods & NAILGUN_MOD_ROF_AMMO ) {
@@ -683,8 +684,10 @@ stateResult_t rvWeaponNailgun::State_Fire( const stateParms_t& parms ) {
 
 			viewModel->StartSound ( "snd_fire", SND_CHANNEL_WEAPON,	0, false, NULL );
 			viewModel->StartSound ( "snd_fireStereo", SND_CHANNEL_ITEM, 0, false, NULL ); 
-					
+				
 			return SRESULT_STAGE ( STAGE_FIREWAIT );
+			*/
+			return SRESULT_STAGE(STAGE_DONE);
 
 		case STAGE_FIREWAIT:
 			if ( !wsfl.attack || wsfl.reload || wsfl.lowerWeapon || AmmoInClip ( ) <= 0 ) {
@@ -696,10 +699,11 @@ stateResult_t rvWeaponNailgun::State_Fire( const stateParms_t& parms ) {
 			return SRESULT_WAIT;
 			
 		case STAGE_DONE:
-			if ( clipSize && wsfl.attack && !wsfl.lowerWeapon && !wsfl.reload ) {
-				PlayCycle ( ANIMCHANNEL_LEGS, "spinempty", 4 );
-				return SRESULT_STAGE ( STAGE_SPINEMPTY );
-			}
+			//if ( clipSize && wsfl.attack && !wsfl.lowerWeapon && !wsfl.reload ) {
+			//	PlayCycle ( ANIMCHANNEL_LEGS, "spinempty", 4 );
+			//	return SRESULT_STAGE ( STAGE_SPINEMPTY );
+			//}
+			PostState("Reload", 4);
 			DrumSpin ( NAILGUN_DRUMSPEED_SLOW, 4 );
 			if ( !wsfl.attack && !AmmoInClip() && AmmoAvailable() && AutoReload ( ) && !wsfl.lowerWeapon ) {
 				PostState ( "Reload", 4 );
