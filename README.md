@@ -14,9 +14,9 @@ Hotkeys for Ablities and Items can be set in game under OTHER in Settings
 ## 1. Add 4 Legends/Heros with their 3 abilities 
 #### Lifeline
 - [x] Tactical: Spawns a drone thats heals her. 
-*spawns medic ai
+* spawns medic ai
 - [x] Ultimate: Supply drop
-*is given 30 items at random
+* is given 30 items at random
 - [x] Passive: Uses Healing Items Better
 * spawns with more healing
 
@@ -24,15 +24,15 @@ Hotkeys for Ablities and Items can be set in game under OTHER in Settings
 - [x] Tactical: spawns a decoy of himself
 - [x] Ultimate: Goes invisible and spawns multiple decoys
 - [x] Passive: When knocked down goes invisible for couple seconds.
-*Quake does have revives since SP so when put below 30 HP, goes invisible and heals back up slowly
+* Quake does have revives since SP so when put below 30 HP, goes invisible and heals back up slowly
 #### Octane
 - [x] Tactical: Injects a stim allowing him to run faster for a couple seconds
-*Gets Haste powerup for about 5 seconds.
+* Gets Haste powerup for about 5 seconds.
 - [ ] Ultimate: Throws Jumppad that launches him into air
-*failed to change velocity of player when colliding with "jumppad" 
+* failed to change velocity of player when colliding with "jumppad" 
 - [x] Passive: Simply heals over time
 #### Revenant
-*last minute addition as I was unable to get ablities of different legend working. Only added passive
+* last minute addition as I was unable to get ablities of different legend working. Only added passive
 - [ ] Tactical: throws orb that silences enemies in hi radius
 - [ ] Ultimate: spawns death tomb that teleports you back to it when at 1 HP
 - [x] Passive: Is silent when crouching
