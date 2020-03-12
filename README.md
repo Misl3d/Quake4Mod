@@ -2,11 +2,12 @@
 
 
 # Apex Legends Quake 4 Mod:
-## Zip file containing mod folder is under release tab:
-
+## Important Stuff:
+Zip file of the Mod, to be put in quake 4 folder.
 [Download](https://github.com/Misl3d/Quake4Mod/releases)
 
-[Branch to Use](https://github.com/Misl3d/Quake4Mod/tree/Ablities)
+Branch to Compile
+[Is Here](https://github.com/Misl3d/Quake4Mod/tree/Ablities)
 
 Hotkeys for Ablities and Items can be set in game under OTHER in Settings
 
