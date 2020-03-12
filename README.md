@@ -58,7 +58,7 @@ Hotkeys for Ablities and Items can be set in game under OTHER in Settings
 ## 3. Character Selection in beginning of game
 - [x] Character Selection
 * When pressing new game all characters are listed with brief descriptions
-## 4. 5 Apex items
+## 4. Add 5 Apex items
 - [x] Syringe
 * heals health for 15
 - [x] Shield Cell
