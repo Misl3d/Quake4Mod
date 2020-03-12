@@ -2,7 +2,7 @@
 
 
 # Apex Legends Quake 4 Mod:
-##Zip file containing mod folder is under release tab:
+## Zip file containing mod folder is under release tab:
 
 [Download](https://github.com/Misl3d/Quake4Mod/releases)
 
