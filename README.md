@@ -1,9 +1,15 @@
-# Quake4Mod
 
 
-Apex Legends Quake 4 Mod:
 
-Deliverables:
+#Apex Legends Quake 4 Mod:
+Zip file containing mod folder is under release tab.
+[Download](https://github.com/Misl3d/Quake4Mod/releases)
+
+[Branch to Use](https://github.com/Misl3d/Quake4Mod/tree/Ablities)
+
+Hotkeys for Ablities and Items can be set in game under OTHER in Settings
+
+##Deliverables:
 
 ## 1. Add 4 Legends/Heros with their 3 abilities 
 #### Lifeline
@@ -22,13 +28,13 @@ Deliverables:
 #### Octane
 - [x] Tactical: Injects a stim allowing him to run faster for a couple seconds
 *Gets Haste powerup for about 5 seconds.
-- [] Ultimate: Throws Jumppad that launches him into air
+- [ ] Ultimate: Throws Jumppad that launches him into air
 *failed to change velocity of player when colliding with "jumppad" 
 - [x] Passive: Simply heals over time
 #### Revenant
 *last minute addition as I was unable to get ablities of different legend working. Only added passive
-- [] Tactical: throws orb that silences enemies in hi radius
-- [] Ultimate: spawns death tomb that teleports you back to it when at 1 HP
+- [ ] Tactical: throws orb that silences enemies in hi radius
+- [ ] Ultimate: spawns death tomb that teleports you back to it when at 1 HP
 - [x] Passive: Is silent when crouching
 * When crounching player is turned invisible 
 ## 2. Replace Weapons with Apex Weapons 
