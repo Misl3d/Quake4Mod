@@ -1,7 +1,7 @@
 
 
 
-#Apex Legends Quake 4 Mod:
+# Apex Legends Quake 4 Mod:
 Zip file containing mod folder is under release tab.
 [Download](https://github.com/Misl3d/Quake4Mod/releases)
 
@@ -9,7 +9,7 @@ Zip file containing mod folder is under release tab.
 
 Hotkeys for Ablities and Items can be set in game under OTHER in Settings
 
-##Deliverables:
+## Deliverables:
 
 ## 1. Add 4 Legends/Heros with their 3 abilities 
 #### Lifeline
